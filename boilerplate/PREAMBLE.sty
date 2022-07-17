@@ -1,0 +1,40 @@
+
+%%%-----------------------------------------------------------------------------
+%%% LANGUAGE AND INPUT FORMAT
+%%%-----------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{ngerman}
+\usepackage{eurosym}
+%\DeclareInputText{128}{\EUR{}}
+%%%-----------------------------------------------------------------------------
+
+%%%%-----------------------------------------------------------------------------
+%%%% Headers and footers
+%%%%-----------------------------------------------------------------------------
+\usepackage{fancyhdr}
+\usepackage{makeidx} \makeindex
+\usepackage{url}
+\usepackage{varioref}
+\newcommand{\figref}[1]{Fig. \ref{#1}}
+%%%%-----------------------------------------------------------------------------
+
+%%%%-----------------------------------------------------------------------------
+%%%% FIGURES
+%%%%-----------------------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+% Image captions
+\usepackage{caption}
+\usepackage{subcaption}
+\DeclareCaptionFont{gray}{\color{darkgray}}
+\captionsetup{format=hang, font={small,sf, gray}, labelfont={bf}, margin=1cm,
+    aboveskip=5pt}
+\captionsetup{indention=0.5cm, hangindent=-0.5cm, parskip=2pt}
+%%%%-----------------------------------------------------------------------------
+
+%%%%-----------------------------------------------------------------------------
+%%%% MISCELLANEOUS
+%%%%-----------------------------------------------------------------------------
+\setlength\parindent{0pt}
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent

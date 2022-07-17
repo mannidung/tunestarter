@@ -1,0 +1,11 @@
+*.aux
+*.idx
+*.log
+*.toc
+*.out
+*.pdf
+*.dvi
+*.ps
+*.synctex.gz
+__init__.py
+.DS_Store

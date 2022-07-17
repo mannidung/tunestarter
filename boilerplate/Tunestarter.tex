@@ -1,0 +1,51 @@
+\documentclass[10pt]{book}
+\usepackage{PREAMBLE}
+%\usepackage[showframe,paper=a4paper,margin=1in]{geometry}
+\usepackage[paper=a4paper,margin=1in]{geometry}
+\usepackage[generate,ps2eps]{abc}
+\usepackage{mathptmx}
+
+%% Formatting
+\renewcommand*{\familydefault}{\sfdefault} % Set default font to sans serif
+\renewcommand\thesection{} % Remove numbering of section
+\renewcommand\thesubsection{} % Remove numbering of subsections
+\renewcommand*\contentsname{Contents} % Change "contents" to "innehåll"
+\renewcommand*\chaptername{Chapter}
+\usepackage[export]{adjustbox}
+\usepackage{cmbright} % Sets font
+\usepackage{enumitem} % Together with next line it sets the enumerations and lists to no separation
+\setlist{nosep}
+\usepackage{wrapfig} % For right aligned image with text to the left
+\usepackage{hyperref} % For links in ToC and for url links
+\usepackage{nameref} % For referencing section names
+\usepackage[yyyymmdd]{datetime} % For ISO standard date format
+\renewcommand{\dateseparator}{--} % Change / to -- in date format
+
+%% The real stuff
+\makeatletter
+
+\makeatother
+
+\begin{document}
+\input{./Titlepage.tex}
+\newgeometry{top=1.1in,bottom=1.1in,right=1.5in,left=1.5in}
+\setcounter{tocdepth}{2}
+\tableofcontents
+%\listoffigures
+%\listoftables
+\addtocontents{toc}{~\hfill\textbf{Page}\par}
+\clearpage
+%\pagestyle{headings}
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\input{./sets/jigs/00-Index.tex}
+\clearpage
+\input{./sets/reels/00-Index.tex}
+\clearpage
+\input{./sets/hornpipes/00-Index.tex}
+\clearpage
+
+\printindex
+\end{document}
