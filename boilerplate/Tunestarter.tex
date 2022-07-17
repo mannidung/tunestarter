@@ -29,7 +29,7 @@
 \begin{document}
 \input{./Titlepage.tex}
 \newgeometry{top=0.5in,bottom=0.5in,right=0.5in,left=0.5in}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 \tableofcontents
 %\listoffigures
 %\listoftables
@@ -39,12 +39,34 @@
 
 \setcounter{page}{1}
 \pagenumbering{arabic}
+\chapter*{Some explanation}
+Tunes are hard to remember.
 
+And it is even harder to remember them when they are in sets.
+
+And then you have to remember what order they are played in, and of course, how the darn tunes start. The goal of this document is to help you with this.
+
+In the sets section, you only see the first row of each tune, just to get you started. Each tune is also displayed fully in the tunes section.
+
+In the tunes section, you will find the full tunes, with cross references in what set they are listed.
+
+So\ldots
+
+Enjoy!
+
+\chapter{Sets}
 \input{./sets/jigs/00-Index.tex}
 \clearpage
 \input{./sets/reels/00-Index.tex}
 \clearpage
 \input{./sets/hornpipes/00-Index.tex}
+\clearpage
+\chapter{Tunes}
+\input{./tunes/jigs/00-Index.tex}
+\clearpage
+\input{./tunes/reels/00-Index.tex}
+\clearpage
+\input{./tunes/hornpipes/00-Index.tex}
 \clearpage
 
 \printindex
