@@ -27,11 +27,13 @@ for FOLDER in ${FOLDERS[@]}; do
             echo "\\end{abc}" >> $FILENAME
             ((COUNTER=$COUNTER+1))
         done
+        echo "~\\" >> $FILENAME
+        echo "~\\" >> $FILENAME
         #echo $FOLDER/$FILENAME
         #echo $TMP_COMPILE/$FOLDER/$FILENAME
         #cat $FILENAME
         mv $FILENAME $ROOT/$TMP_COMPILE/$FOLDER/
-        echo "\\input{./${FOLDER}/$FILENAME} \clearpage" >> $ROOT/$TMP_COMPILE/$FOLDER/00-Index.tex
+        echo "\\input{./${FOLDER}/$FILENAME} " >> $ROOT/$TMP_COMPILE/$FOLDER/00-Index.tex
         #echo $ROOT/$TMP_COMPILE/$FOLDER/00-Index.tex
         cat $ROOT/$TMP_COMPILE/$FOLDER/00-Index.tex
         cd ..
