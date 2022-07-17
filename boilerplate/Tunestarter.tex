@@ -16,8 +16,13 @@
 \usepackage{enumitem} % Together with next line it sets the enumerations and lists to no separation
 \setlist{nosep}
 \usepackage{wrapfig} % For right aligned image with text to the left
-\usepackage{hyperref} % For links in ToC and for url links
-\usepackage{nameref} % For referencing section names
+% ref packages
+\usepackage{nameref}
+% folowing  must be in this order
+\usepackage{varioref}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
 \usepackage[yyyymmdd]{datetime} % For ISO standard date format
 \renewcommand{\dateseparator}{--} % Change / to -- in date format
 

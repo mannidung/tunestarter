@@ -3,7 +3,6 @@ BOILERPLATE_DIR=boilerplate
 TMP_COMPILE=tmp_compiledir
 ROOT="$(pwd)"
 
-LABELCOUNTER=1
 
 mkdir -p $TMP_COMPILE
 cp -R $BOILERPLATE_DIR/* $TMP_COMPILE/
@@ -14,6 +13,7 @@ FOLDERS=("sets/jigs" "sets/reels")
 for FOLDER in "${FOLDERS[@]}"; do
     cd $FOLDER
     ls | while read SET; do
+        SETLABEL=$(echo $SET | md5)
         echo $SET
         cd "$SET"
         SETNAME_UNDERSCORE=${SET// /_}
@@ -22,24 +22,34 @@ for FOLDER in "${FOLDERS[@]}"; do
         echo $SETNAME_UNDERSCORE
         echo $FILENAME
         echo "\subsection{$SET}" > $FILENAME
+        echo "\label{$SETLABEL}" >> $FILENAME
         
         COUNTER=1
         ls *.abc | while read TUNE; do
             #echo $COUNTER
             # Full tune
             FULLTUNE_FILENAME=${TUNE}_FULL.tex
-            FULLTUNE_NAME=$(sed -n 's/^T:[[:space:]]*//p' ${TUNE})
-            echo "\subsection{$FULLTUNE_NAME}" > $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
-            echo "\\begin{abc}[name=$FULLTUNE_FILENAME]" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
-            cat $TUNE >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
-            #cat $TUNE
-            echo "\\end{abc}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
-            echo "\\input{./tunes/$(basename $FOLDER)/$FULLTUNE_FILENAME} " >> $FULLTUNE_GOALPATH/00-Index.tex
+            if [ ! -f $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME ]
+            then
+                FULLTUNE_NAME=$(sed -n 's/^T:[[:space:]]*//p' ${TUNE} | tr -d '\n')
+                TUNELABEL=$(echo $FULLTUNE_NAME | md5)
+                echo "\\subsection{$FULLTUNE_NAME}" > $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "\\label{$TUNELABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "\\begin{abc}[name=$FULLTUNE_FILENAME]" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                cat $TUNE >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                cat $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "\\end{abc}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "Tune included in set ~\nameref{$SETLABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "\\input{./tunes/$(basename $FOLDER)/$FULLTUNE_FILENAME}" >> $FULLTUNE_GOALPATH/00-Index.tex
+            else
+                echo "Tune included in set ~\nameref{$SETLABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+            fi
 
             # And set part
             echo "\\begin{abc}[name=${SETNAME_UNDERSCORE}_${COUNTER}]" >> $FILENAME
             sed '/|/q' $TUNE >> $FILENAME
             echo "\\end{abc}" >> $FILENAME
+            echo "Full tune on page ~\pageref{$TUNELABEL}" >> $FILENAME
             ((COUNTER=$COUNTER+1))
         done
         echo "~\\" >> $FILENAME
