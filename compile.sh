@@ -9,7 +9,7 @@ cp -R $BOILERPLATE_DIR/* $TMP_COMPILE/
 
 #######
 
-FOLDERS=("sets/jigs" "sets/reels")
+FOLDERS=("sets/jigs" "sets/slipjigs" "sets/reels")
 for FOLDER in "${FOLDERS[@]}"; do
     cd $FOLDER
     ls | while read SET; do
@@ -28,21 +28,21 @@ for FOLDER in "${FOLDERS[@]}"; do
         ls *.abc | while read TUNE; do
             #echo $COUNTER
             # Full tune
-            FULLTUNE_FILENAME=${TUNE}_FULL.tex
+            TUNELABEL=$(cat $TUNE | md5)
+            FULLTUNE_FILENAME=${TUNELABEL}.tex
             if [ ! -f $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME ]
             then
                 FULLTUNE_NAME=$(sed -n 's/^T:[[:space:]]*//p' ${TUNE} | tr -d '\n')
-                TUNELABEL=$(echo $FULLTUNE_NAME | md5)
                 echo "\\subsection{$FULLTUNE_NAME}" > $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 echo "\\label{$TUNELABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 echo "\\begin{abc}[name=$FULLTUNE_FILENAME]" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 cat $TUNE >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 cat $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 echo "\\end{abc}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
-                echo "Tune included in set ~\nameref{$SETLABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "Tune included in set ~\nameref{$SETLABEL} \linebreak" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
                 echo "\\input{./tunes/$(basename $FOLDER)/$FULLTUNE_FILENAME}" >> $FULLTUNE_GOALPATH/00-Index.tex
             else
-                echo "Tune included in set ~\nameref{$SETLABEL}" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
+                echo "Tune included in set ~\nameref{$SETLABEL} \linebreak" >> $FULLTUNE_GOALPATH/$FULLTUNE_FILENAME
             fi
 
             # And set part
