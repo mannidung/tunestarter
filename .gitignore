@@ -11,3 +11,6 @@ __init__.py
 .DS_Store
 venv/
 storage/
+__pycache__
+tmp
+tmp_compiledir

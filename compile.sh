@@ -76,4 +76,4 @@ pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder  -shell
 pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder  -shell-escape "Tunestarter.tex" 
 mv Tunestarter.pdf ../
 cd ..
-rm -rf $TMP_COMPILE
+#rm -rf $TMP_COMPILE

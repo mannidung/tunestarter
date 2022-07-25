@@ -1,0 +1,16 @@
+---
+ name: "Göttingen Tune Starter"
+ sets:
+    - name: "Set des Monats 22-02"
+      tunes:
+        - source: "thesession"
+          id: 4
+          setting: 1
+        - source: "thesession"
+          id: 3
+    - tunes:
+        - source: "thesession"
+          id: 5
+          setting: 1
+        - source: "thesession"
+          id: 19
