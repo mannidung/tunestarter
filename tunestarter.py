@@ -12,7 +12,7 @@ class Tunestarter:
         self.tunes = []
 
     def create_tunestarter(self, filepath):
-        #self.prepare_boilerplate()
+        self.prepare_boilerplate()
         self.process_yaml(filepath)
         self.download_tunes()
         self.prepare_sets_and_tunes()
