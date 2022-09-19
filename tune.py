@@ -1,5 +1,6 @@
 import utils
 import os
+import hashlib
 import settings
 import urllib.request as request
 import sjkabc
@@ -43,6 +44,8 @@ class Tune:
         self.path = ""
         self.title = ""
         self.rhythm = ""
+        self.in_sets = ["1", "2", "3"]
+        self.label = "" # Label for cross referencing in latex
 
         if self.source == "thesession":
             self.url = 'https://thesession.org/tunes/{}/abc/{}'.format(self.id, self.setting)
@@ -53,7 +56,15 @@ class Tune:
                                     'thesession_{}_{}.abc'.format(self.id, self.setting))
         
         self.check_exists()
-        
+    
+    def __str__(self):
+        return "\n\t---\n\tTitle: {} \n\tType: {}\n\tSource: {}\n\tID: {}\n\tSetting: {}\n\tPath: {}\n\tIn sets: {}\n\t---\n".format(self.title,
+                                                                        self.rhythm,
+                                                                        self.source,
+                                                                        self.id,
+                                                                        self.setting,
+                                                                        self.path,
+                                                                        self.in_sets)
 
     def check_exists(self):
         if os.path.exists(self.path):
@@ -70,10 +81,11 @@ class Tune:
             request.urlretrieve(self.url, self.path)
             utils.debug_print("File at url {} downloaded to path {}.".format(self.path, self.url))
             self.exists = True
+        self.label = hashlib.md5(open(self.path,'rb').read()).hexdigest()
     
     def get_metadata(self):
         if not self.check_exists():
             self.download()
         for tune in sjkabc.parse_file(self.path):
-            self.title = tune.title
-            self.rhythm = tune.rhythm
+            self.title = "".join(tune.title)
+            self.rhythm = "".join(tune.rhythm)

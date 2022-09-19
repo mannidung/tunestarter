@@ -12,8 +12,13 @@ class Tunestarter:
         self.tunes = []
 
     def create_tunestarter(self, filepath):
+        #self.prepare_boilerplate()
         self.process_yaml(filepath)
         self.download_tunes()
+        self.prepare_sets_and_tunes()
+
+
+
 
     def add_set(self, set):
         utils.debug_print("Adds set {} to collection {}".format(set, self.name))
@@ -46,6 +51,17 @@ class Tunestarter:
         for tune in self.tunes:
             tune.download()
             tune.get_metadata()
+    
+    def prepare_sets_and_tunes(self):
+        tunes = []
+        for set in self.sets:
+            set.process_set()
+            for tune in set.tunes:
+                tunes.append(tune)
+            #print(set)
+        sorted_tunes = sorted(tunes, key=lambda x: x.title, reverse=False)
+        #for tune in sorted_tunes:
+            #print(tune)
     
     def prepare_boilerplate(self):
         destination = shutil.copytree("./boilerplate", settings.settings["tmp_dir"]) 
