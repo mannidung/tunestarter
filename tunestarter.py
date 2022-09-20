@@ -17,9 +17,6 @@ class Tunestarter:
         self.download_tunes()
         self.prepare_sets_and_tunes()
 
-
-
-
     def add_set(self, set):
         utils.debug_print("Adds set {} to collection {}".format(set, self.name))
         self.sets.append(set)
@@ -60,7 +57,8 @@ class Tunestarter:
                 tunes.append(tune)
             #print(set)
         sorted_tunes = sorted(tunes, key=lambda x: x.title, reverse=False)
-        #for tune in sorted_tunes:
+        for tune in sorted_tunes:
+            tune.create_latex()
             #print(tune)
     
     def prepare_boilerplate(self):

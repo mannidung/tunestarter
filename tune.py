@@ -45,6 +45,7 @@ class Tune:
         self.title = ""
         self.rhythm = ""
         self.in_sets = ["1", "2", "3"]
+        self.filename = "" # File name for generated latex file
         self.label = "" # Label for cross referencing in latex
 
         if self.source == "thesession":
@@ -81,7 +82,6 @@ class Tune:
             request.urlretrieve(self.url, self.path)
             utils.debug_print("File at url {} downloaded to path {}.".format(self.path, self.url))
             self.exists = True
-        self.label = hashlib.md5(open(self.path,'rb').read()).hexdigest()
     
     def get_metadata(self):
         if not self.check_exists():
@@ -89,3 +89,37 @@ class Tune:
         for tune in sjkabc.parse_file(self.path):
             self.title = "".join(tune.title)
             self.rhythm = "".join(tune.rhythm)
+        self.label = hashlib.md5(open(self.path,'rb').read()).hexdigest()
+        self.filename = os.path.join("tunes", self.rhythm, "{}.tex".format(self.label))
+    
+    def create_latex(self):
+        strings = self.get_set_latex_strings()
+        print(os.path.join(settings.settings["tmp_dir"], self.filename))
+        file = open(os.path.join(settings.settings["tmp_dir"], self.filename),'w+')
+        for string in strings:
+            file.write(string)
+        file.close()
+        self.write_to_latex_index()
+    
+    def write_to_latex_index(self):
+        print(os.path.join(settings.settings["tmp_dir"], "tunes",self.rhythm ,"00-Index.tex"))
+        file = open(os.path.join(settings.settings["tmp_dir"], "tunes", self.rhythm ,"00-Index.tex"),'a')
+        file.write("\n\\input{{./{}}}".format(self.filename))
+        file.close()
+    
+    def get_set_latex_strings(self):
+        strings = []
+        strings.append("\\begin{{abc}}[name={}] \n".format(self.label))
+        print("DEBUG: reading tune from path {}".format(self.path))
+        file = open(self.path,'r')
+        cont = True
+        while cont:
+            line = file.readline()
+            strings.append(line)
+            # If line is empty, then stop the loop
+            if not line:
+                break
+        strings.append("\\end{abc}\n")
+        #strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
+        file.close()
+        return strings
