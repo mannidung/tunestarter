@@ -1,10 +1,19 @@
+import os
 import utils
 import shutil
 import settings
+import subprocess
 from set import Set
 from tune import Tune
 
 class Tunestarter:
+    pdflatex_comamnd = ["pdflatex",
+                        "-synctex=1",
+                        "-interaction=nonstopmode",
+                        "-file-line-error",
+                        "-recorder",
+                        "-shell-escape",
+                        "Tunestarter.tex"]
 
     def __init__(self):
         self.name = ""
@@ -16,6 +25,13 @@ class Tunestarter:
         self.process_yaml(filepath)
         self.download_tunes()
         self.prepare_sets_and_tunes()
+        p = subprocess.Popen(self.pdflatex_comamnd, cwd=settings.settings["tmp_dir"])
+        p.wait()
+        q = subprocess.Popen(self.pdflatex_comamnd, cwd=settings.settings["tmp_dir"])
+        q.wait()
+        shutil.move(os.path.join(settings.settings["tmp_dir"], "Tunestarter.pdf"), "{}.pdf".format(self.name))
+        self.cleanup_boilerplate()
+
 
     def add_set(self, set):
         utils.debug_print("Adds set {} to collection {}".format(set, self.name))
