@@ -1,4 +1,5 @@
 import os
+from signal import pause
 import utils
 import shutil
 import settings
@@ -50,6 +51,7 @@ class Tunestarter:
             name = ""
             if "name" in set_yaml:
                 name = set_yaml["name"]
+                print(name)
             set = Set(self, name)
             for tune_yaml in set_yaml["tunes"]:
                 if "setting" not in tune_yaml:

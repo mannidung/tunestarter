@@ -1,6 +1,17 @@
 ---
- name: "Example Tune Starter"
+ name: "Göttingen Tune Starter"
  sets:
+    - name: "Set des Monats 21-12"
+      tunes:
+        - source: "thesession"
+          id: 191
+          setting: 4
+        - source: "thesession"
+          id: 1550
+          setting: 1550
+        - source: "thesession"
+          id: 1327
+          setting: 1327
     - name: "Set des Monats 22-02"
       tunes:
         - source: "thesession"

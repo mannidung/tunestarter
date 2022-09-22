@@ -81,6 +81,8 @@ class Set:
     
     def get_set_latex_strings(self):
         strings = []
+        strings.append("\\subsection{{ {} }} \n".format(self.name))
+        #\label{d1caf799c9d1b34e96e1287c6ffd360c}
         for tune in self.tunes:
             strings.append("\\begin{{abc}}[name={}] \n".format(hashlib.md5(tune.title.encode('utf-8')).hexdigest()))
             print(tune.path)
