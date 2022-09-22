@@ -15,7 +15,7 @@ As a bonus, it also includes the entire tune in a second chapter, complete with 
 ### How does it work?
 The steps are simple, but currently requires some programming knowledge from the user (this will change in the future, remember that this is the pre-alpha).
 
-You need to define your sets in a YAML file. There is an example included in the repository called example.yaml.
+You need to define your sets in a YAML file. There are examples included in the directory named examples.
 
 In this file, you simply list the sets one by one, writing the index and version of the tune you want to add to the set.
 
@@ -24,10 +24,11 @@ Tunestarter will use this information to download the ABC files, sort them, and 
 Finally, it will generate a PDF file you can bring with you on your phone or tablet or print it out (but please don't... think about the trees).
 
 ### Current limitations
+- YAML file path hardcoded.
 - Only works with thesession.org.
 - Only tested on mac.
 - You need to have set up pdflatex before running this.
-- No real testing, error handling, etc. Be prepared to get nasty errors if you get it wrong.
+- No real testing, error handling, etc. Be prepared to get nasty errors if you do something wrong.
 
 ### Future plans
 - Include more sources than thesession.org
@@ -38,3 +39,8 @@ Finally, it will generate a PDF file you can bring with you on your phone or tab
 
 ### Reporting bugs
 Please report issues through the repository's issues tab. Include as much info as you can, and make sure to include the error message and an example YAML-file that causes it.
+
+##### Note about sjkabc
+To handle the abc files, I am using the library sjkabc. This is a library that is sadly without license but is available here: https://github.com/sjktje/sjkabc. It is also included in this repository under the directory sjkabc.
+
+If you are the owner/author of this library, and would like me to remove any references to it, please create an issue to let me know.
