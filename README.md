@@ -23,6 +23,9 @@ Tunestarter will use this information to download the ABC files, sort them, and 
 
 Finally, it will generate a PDF file you can bring with you on your phone or tablet or print it out (but please don't... think about the trees).
 
+### How to run?
+`python main.py ./example/example.yaml`
+
 ### Current limitations
 - YAML file path hard coded.
 - Only works with thesession.org.
