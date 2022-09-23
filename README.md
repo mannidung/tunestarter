@@ -15,7 +15,25 @@ As a bonus, it also includes the entire tune in a second chapter, complete with 
 ### How does it work?
 The steps are simple but currently require some programming knowledge from the user (this will change in the future, remember that this is the pre-alpha).
 
-You need to define your sets in a YAML file. There are examples included in the directory named examples.
+You need to define your sets in a YAML file similar to the one below There are examples included in the directory named examples.
+
+```
+ name: "Example Tune Starter" <-- Name of the tune starter
+ sets:
+    - name: "Set des Monats 22-02" <-- Name of set. When not set, the names of the tunes are used
+      tunes:
+        - source: "thesession" <-- the source for the tune. Currently only thesession is supported
+          id: 4 <-- ID of the tune, used for query to download ABC file
+          setting: 3 <-- Setting is a specific version of the tune. If left out, setting 1 is used
+        - source: "thesession"
+          name: "Drowsy Maggie" <-- You can also specify a name of a tune. Then the search function of thesession.org is used. If you get wrong or no results, make sure to test the search terms on thesession.org to make sure that the term gives the tune you want
+    - tunes:
+        - source: "thesession"
+          id: 5
+          setting: 1
+        - source: "thesession"
+          id: 19
+```
 
 In this file, you simply list the sets one by one, writing the index and version of the tune you want to add to the set.
 
@@ -37,7 +55,6 @@ optional arguments:
   ```
 
 ### Current limitations
-- YAML file path hard coded.
 - Only works with thesession.org.
 - Only tested on mac.
 - You need to set up PDFlatex before running this.

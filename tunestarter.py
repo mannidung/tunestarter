@@ -55,12 +55,8 @@ class Tunestarter:
                 print(name)
             set = Set(self, name)
             for tune_yaml in set_yaml["tunes"]:
-                if "setting" not in tune_yaml:
-                    tune = Tune(tune_yaml["source"], tune_yaml["id"])
-                    self.add_tune(tune, set)
-                else:
-                    tune = Tune(tune_yaml["source"], tune_yaml["id"], tune_yaml["setting"])
-                    self.add_tune(tune, set)
+                tune = Tune(tune_yaml)
+                self.add_tune(tune, set)
             self.add_set(set)
     
     def download_tunes(self):

@@ -3,6 +3,7 @@ import os
 import hashlib
 import settings
 import urllib.request as request
+import requests
 import sjkabc
 
 class Tune:
@@ -28,17 +29,43 @@ class Tune:
 
     Methods
     -------
-    __init__(source, id, setting = 1)
-        Prints the animals name and what sound it makes
+    __init__(tune_dict)
+        Creates a tune based on a dict containing source, either name or id, and setting
     check_exists()
         Checks if a file exists at the tune's path
     download()
         Downloads the file from the source and puts it in the storage directory
     """
-    def __init__(self, source, id, setting = 1):
-        self.source = source
-        self.id = id
-        self.setting = setting
+    def __init__(self, tune_dict):
+        self.source = tune_dict["source"]
+        if "id" not in tune_dict:
+            # No id was specified. Check if name is set
+            if "name" not in tune_dict:
+                # DOES NOT KNOW WHAT TO DO! Panic!
+                print("ERROR: Neither ID nor Name was set for tune in YAML-file. Quitting...")
+                quit()
+            # Name is specified, time to search...
+            params = dict(
+                        q=tune_dict["name"],
+                        format='json',
+                        perpage='1'
+                    )
+            url = "https://thesession.org/tunes/search"
+
+            resp = requests.get(url=url, params=params)
+            data = resp.json() # Check the JSON Response Content documentation below
+            if len(data["tunes"]) == 0:
+                # No result was returned, search term needs to be improved
+                print("ERROR: No search result for tune with name {}, please check the search terms".format(tune_dict["name"]))
+                quit()
+            self.id = data["tunes"][0]["id"]
+        else:
+            self.id = tune_dict["id"]
+
+        if "setting" not in tune_dict:
+            self.setting = 1
+        else: 
+            self.setting = tune_dict["setting"]
         self.exists = False
         self.url = ""
         self.path = ""

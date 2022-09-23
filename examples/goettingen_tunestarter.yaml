@@ -4,14 +4,21 @@
     - name: "Set des Monats 21-12"
       tunes:
         - source: "thesession"
-          id: 191
+          name: "My Mind Will Never Be Easy"
           setting: 4
         - source: "thesession"
-          id: 1550
-          setting: 1
+          name: "Humours Of Derrycrossane"
         - source: "thesession"
           id: 1327
-          setting: 1
+    - name: "Set des Monats 22-01"
+      tunes:
+        - source: "thesession"
+          name: "The Orphan"
+          setting: 10
+        - source: "thesession"
+          name: "Spotted Dog"
+        - source: "thesession"
+          name: "Disconnect"
     - name: "Set des Monats 22-02"
       tunes:
         - source: "thesession"
@@ -23,14 +30,25 @@
         - source: "thesession"
           id: 2465
           setting: 1
-    - name: "Set des Monats 22-01"
+    - name: "Set des Monats 22-03"
       tunes:
         - source: "thesession"
-          id: 217
-          setting: 10
+          name: "The Champaign Jig goes to Columbia"
+          setting: 3
         - source: "thesession"
-          id: 3967
-          setting: 1
+          name: "The Sailor’s Wife"
+          setting: 12
         - source: "thesession"
-          id: 14681
-          setting: 1
+          name: "A Bottle of Vodka"
+          setting: 4
+    - name: "Set des Monats 22-04"
+      tunes:
+        - source: "thesession"
+          name: "Oblique"
+          setting: 2
+        - source: "thesession"
+          name: "Christy Barry"
+          setting: 9
+        - source: "thesession"
+          name: "Heidi Hendi"
+          setting: 3
