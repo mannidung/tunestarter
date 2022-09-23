@@ -8,4 +8,5 @@ def read_setup():
     if not os.path.exists(settings["storage"]):
         utils.debug_print("Storage folder does not exist, creating...")
         os.mkdir(settings["storage"])
+    settings["keeptmp"] = False
     utils.debug_print("Setup is : {}".format(settings))

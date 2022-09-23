@@ -31,7 +31,8 @@ class Tunestarter:
         q = subprocess.Popen(self.pdflatex_comamnd, cwd=settings.settings["tmp_dir"])
         q.wait()
         shutil.move(os.path.join(settings.settings["tmp_dir"], "Tunestarter.pdf"), "{}.pdf".format(self.name))
-        self.cleanup_boilerplate()
+        if not settings.settings["keeptmp"]:
+            self.cleanup_boilerplate()
 
 
     def add_set(self, set):

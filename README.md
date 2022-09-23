@@ -23,8 +23,18 @@ Tunestarter will use this information to download the ABC files, sort them, and 
 
 Finally, it will generate a PDF file you can bring with you on your phone or tablet or print it out (but please don't... think about the trees).
 
-### How to run?
-`python main.py ./example/example.yaml`
+### Usage
+```usage: tunestarter [-h] [--keeptmp] filepath
+
+Create a tunestarter for your session
+
+positional arguments:
+  filepath    path to the tune starter yaml file
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --keeptmp   the tmp file will be kept after generation is done (good for debugging)
+  ```
 
 ### Current limitations
 - YAML file path hard coded.

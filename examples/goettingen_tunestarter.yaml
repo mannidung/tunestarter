@@ -8,10 +8,10 @@
           setting: 4
         - source: "thesession"
           id: 1550
-          setting: 1550
+          setting: 1
         - source: "thesession"
           id: 1327
-          setting: 1327
+          setting: 1
     - name: "Set des Monats 22-02"
       tunes:
         - source: "thesession"

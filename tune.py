@@ -109,16 +109,19 @@ class Tune:
     
     def get_set_latex_strings(self):
         strings = []
+        strings.append("\\subsection{{ {} }} \n".format(self.title))
         strings.append("\\begin{{abc}}[name={}] \n".format(self.label))
         print("DEBUG: reading tune from path {}".format(self.path))
         file = open(self.path,'r')
         cont = True
         while cont:
             line = file.readline()
-            strings.append(line)
             # If line is empty, then stop the loop
             if not line:
                 break
+            # Skip title, it is already set in the subsection entry above
+            if "T:" not in line:
+                    strings.append(line)
         strings.append("\\end{abc}\n")
         #strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
         file.close()
