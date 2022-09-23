@@ -110,6 +110,7 @@ class Tune:
     def get_set_latex_strings(self):
         strings = []
         strings.append("\\subsection{{ {} }} \n".format(self.title))
+        strings.append("\\label{{{}}} \n".format(self.label))
         strings.append("\\begin{{abc}}[name={}] \n".format(self.label))
         print("DEBUG: reading tune from path {}".format(self.path))
         file = open(self.path,'r')

@@ -1,5 +1,6 @@
 import settings
 import os
+import shutil
 import utils
 import setprocessor
 from tunestarter import Tunestarter
@@ -22,9 +23,14 @@ parser.add_argument('--keeptmp',
 if __name__ == "__main__":
     settings.read_setup()
     args = parser.parse_args()
+    
+    # Should the temporary directory be kept afterwards?
     if args.keeptmp:
         settings.settings["keeptmp"] = True
+
+    # Clean up any tmp dir that might already exist
     if os.path.exists(settings.settings["tmp_dir"]):
-        os.rmdir(settings.settings["tmp_dir"])
+        shutil.rmtree(settings.settings["tmp_dir"])
+        
     tunestarter = Tunestarter()
     tunestarter.create_tunestarter(args.filepath[0])
