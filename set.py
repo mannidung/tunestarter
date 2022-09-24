@@ -39,6 +39,7 @@ class Set:
         self.filename = ""
         self.tunes = []
         self.tunetypes = ""
+        self.label = hashlib.md5(self.name.encode('utf-8')).hexdigest()
     
     def __str__(self):
         tuneString = ""
@@ -51,6 +52,8 @@ class Set:
     
     def add_tune(self, tune):
         utils.debug_print("Adds tune ({}, {}, {}) to set {}".format(tune.source, tune.id, tune.setting, self.name))
+        tune.add_set_label(self.label)
+        print(self.label)
         self.tunes.append(tune)
 
     def process_set(self):
@@ -62,7 +65,7 @@ class Set:
         if self.name == "":
             for tune in self.tunes:
                 self.name = self.name + tune.title + ", "
-        self.filename = os.path.join("sets", self.tunetypes, "{}.tex".format(hashlib.md5(self.name.encode('utf-8')).hexdigest()))
+        self.filename = os.path.join("sets", self.tunetypes, "{}.tex".format(self.label))
         self.create_latex()
     
     def create_latex(self):
@@ -82,7 +85,7 @@ class Set:
     def get_set_latex_strings(self):
         strings = []
         strings.append("\\subsection{{ {} }} \n".format(self.name))
-        #\label{d1caf799c9d1b34e96e1287c6ffd360c}
+        strings.append("\\label{{{}}} \n".format(self.label))
         for tune in self.tunes:
             strings.append("{} \\\\ \n".format(tune.title))
             strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))

@@ -14,3 +14,9 @@
           setting: 1
         - source: "thesession"
           id: 19
+    - tunes:
+        - source: "thesession"
+          name: "Drowsy Maggie"
+          setting: 1
+        - source: "thesession"
+          id: 19

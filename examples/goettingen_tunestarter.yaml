@@ -101,3 +101,8 @@
         - source: "thesession"
           name: "Josefin"
           setting: 3
+    - tunes:
+        - source: "thesession"
+          name: "Sommarvals"
+        - source: "thesession"
+          name: "The Banks Of Newfoundland"

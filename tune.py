@@ -1,3 +1,4 @@
+from signal import pause
 import utils
 import os
 import hashlib
@@ -71,7 +72,7 @@ class Tune:
         self.path = ""
         self.title = ""
         self.rhythm = ""
-        self.in_sets = ["1", "2", "3"]
+        self.in_sets = []
         self.filename = "" # File name for generated latex file
         self.label = "" # Label for cross referencing in latex
 
@@ -119,6 +120,9 @@ class Tune:
         self.label = hashlib.md5(open(self.path,'rb').read()).hexdigest()
         self.filename = os.path.join("tunes", self.rhythm, "{}.tex".format(self.label))
     
+    def add_set_label(self, label):
+        self.in_sets.append(label)
+    
     def create_latex(self):
         strings = self.get_set_latex_strings()
         print(os.path.join(settings.settings["tmp_dir"], self.filename))
@@ -151,6 +155,7 @@ class Tune:
             if "T:" not in line:
                     strings.append(line)
         strings.append("\\end{abc}\n")
-        #strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
+        for setlabel in self.in_sets:
+            strings.append("Tune included in set ~\\nameref{{{}}} \\linebreak".format(setlabel))
         file.close()
         return strings
