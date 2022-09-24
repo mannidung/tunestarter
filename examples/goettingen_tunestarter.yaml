@@ -52,3 +52,52 @@
         - source: "thesession"
           name: "Heidi Hendi"
           setting: 3
+    - name: "Set des Monats 22-05"
+      tunes:
+        - source: "thesession"
+          name: "The Monaghan Twig"
+        - source: "thesession"
+          name: "The Maple Leaf"
+        - source: "thesession"
+          name: "The Trip To Herve"
+    - name: "Set des Monats 22-06"
+      tunes:
+        - source: "thesession"
+          name: "Lough Mountain"
+        - source: "thesession"
+          name: "Andy Renwick"
+          setting: 5
+        - source: "thesession"
+          name: "The Curlews"
+          setting: 2
+    - name: "Set des Monats 22-07"
+      tunes:
+        - source: "thesession"
+          name: "The Fairhaired Boy"
+        - source: "thesession"
+          name: "The Humours Of Lisheen"
+          setting: 2
+        - source: "thesession"
+          name: "Kitty Lie Over"
+          setting: 12
+    - name: "Set des Monats 22-08"
+      tunes:
+        - source: "thesession"
+          name: "Will You Come Home With Me"
+        - source: "thesession"
+          name: "Hardiman The Fiddler"
+    - name: "Set des Monats 22-09"
+      tunes:
+        - source: "thesession"
+          name: "My Former Wife"
+          setting: 2
+        - source: "thesession"
+          name: "The Mystery Inch"
+        - source: "thesession"
+          name: "The Banks Of Newfoundland"
+    - tunes:
+        - source: "thesession"
+          name: "Sommarvals"
+        - source: "thesession"
+          name: "Josefin"
+          setting: 3
