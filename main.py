@@ -1,6 +1,7 @@
 import settings
 import os
 import shutil
+import db
 import utils
 import setprocessor
 from tunestarter import Tunestarter
@@ -31,6 +32,7 @@ if __name__ == "__main__":
     # Clean up any tmp dir that might already exist
     if os.path.exists(settings.settings["tmp_dir"]):
         shutil.rmtree(settings.settings["tmp_dir"])
-        
-    tunestarter = Tunestarter()
-    tunestarter.create_tunestarter(args.filepath[0])
+
+    db.import_yaml(args.filepath[0])
+    #tunestarter = Tunestarter()
+    #tunestarter.create_tunestarter(args.filepath[0])
