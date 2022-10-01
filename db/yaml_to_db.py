@@ -22,14 +22,12 @@ def import_yaml(filepath):
                         set_name = set_name + "{}".format(tune_yaml["name"])
                     if "setting" in tune_yaml:
                         set_name = set_name + "{}".format(tune_yaml["setting"])
-            add_set(tunestarter_id, set_name)
-            #set = Set(self, name)
-            """
+            set_id = add_set(tunestarter_id, set_name)
             for tune_yaml in set_yaml["tunes"]:
-                tune = Tune(tune_yaml)
-                self.add_tune(tune, set)
-            self.add_set(set)
-            """
+                add_tune(set_id, tune_yaml)
+                #tune = Tune(tune_yaml)
+                #self.add_tune(tune, set)
+            #self.add_set(set)
 
 def add_tunestarter(name):
     tunestarter_table = get_metadata().tables['tunestarters']
@@ -64,4 +62,61 @@ def add_set(tunestarter_id, name):
         utils.debug_print("tunestarter to set with tunestarter id {} and set id {} already exists".format(tunestarter_id, set_id))
     return set_id
 
+def add_tune(set_id, tune_yaml):
+    # If not ID nor name defined, we're doomed. Exit in error
+    if ("id" not in tune_yaml) and ("name" not in tune_yaml):
+        raise ValueError('Either name or id must be defined')
+    if "source" not in tune_yaml:
+        raise ValueError('Source needs to be defined')
+    tune = {}
+    if "id" in tune_yaml:
+        tune["source_id"] = tune_yaml["id"]
+    else:
+        tune["source_id"] = -1
+    if "name" in tune_yaml:
+        tune["name"] = tune_yaml["name"]
+    else:
+        tune["name"] = "N/A"
+    if "setting" in tune_yaml: 
+        tune["source_setting"] = tune_yaml["setting"]
+    else:
+        tune["source_setting"] = -1
+    
+    # Get ID of source
+    sources_table = get_metadata().tables['sources']
+    source = sources_table.select().where(sources_table.c.name == tune_yaml["source"])
+    result = get_connection().execute(source)
+    source_id = result.fetchone().id
+    utils.debug_print("Source ID is {}".format(source_id))
+    tune["source"] = source_id
+
+    # Write tune to database
+    tunes_table = get_metadata().tables['tunes']
+    tune_id = 0
+    try:
+        ins = tunes_table.insert().values(name = tune["name"],
+                                            source = tune["source"],
+                                            source_id = tune["source_id"],
+                                            source_setting = tune["source_setting"]
+                                        )
+        result = get_connection().execute(ins)
+        tune_id = result.inserted_primary_key[0]
+    except:
+        utils.debug_print("Tune configuration already exists")
+        existing_tune = tunes_table.select().where(tunes_table.c.name == tune["name"],
+                                        tunes_table.c.source == tune["source"],
+                                        tunes_table.c.source_id == tune["source_id"], 
+                                        tunes_table.c.source_setting == tune["source_setting"])
+        result = get_connection().execute(existing_tune)
+        tune_id = result.fetchone().id
+
+    # Write set and tune to bridging table
+    tunes_to_sets_table = get_metadata().tables['tunes_to_sets']
+    ins = tunes_to_sets_table.insert().values(tune = tune_id, set = set_id)
+    try:
+        result = get_connection().execute(ins)
+    except:
+        utils.debug_print("tunes to set with tune id {} and set id {} already exists".format(tune_id, set_id))
+    utils.debug_print("Tune with tuple {}, {}, {} handled successfully".format(tune["name"], tune["source_id"], tune["source_setting"]))
+    return
 __all__ = ['import_yaml']

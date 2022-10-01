@@ -1,3 +1,4 @@
+from enum import unique
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData, select
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, UniqueConstraint
@@ -25,6 +26,18 @@ def setup_db(path, debug=False):
     if not database_exists(_engine.url):
         create_database(_engine.url)
     create_schema(_engine)
+    setup_sources()
+
+def setup_sources():
+    predefined_sources = ["thesession"]
+    sources_table = get_metadata().tables['sources']
+    for source in predefined_sources:
+        ins = sources_table.insert().values(name = source)
+        try:
+            get_connection().execute(ins)
+            return
+        except:
+            return
 
 def create_schema(engine):
     metadata_obj = get_metadata()
@@ -32,13 +45,13 @@ def create_schema(engine):
     # Table containing sets.
     Table('sets', metadata_obj,
         Column('id', Integer, primary_key=True),
-        Column('name', String, nullable=False, unique=True)
+        Column('name', String, nullable=False)
     )
 
     # Table containing sources, e.g. thesession, local, etc.
     Table('sources', metadata_obj,
         Column('id', Integer, primary_key=True),
-        Column('name', String, nullable=False)
+        Column('name', String, nullable=False, unique=True)
     )
 
     # The table containing the actual tunes and abc-data
@@ -47,10 +60,15 @@ def create_schema(engine):
         Column('name', String, nullable=False),
         Column('source', Integer, ForeignKey('sources.id')),
         Column('source_id', Integer, nullable=False),
-        Column('source_setting', Integer, nullable=True),
-        Column('title', String, nullable=False),
-        Column('rhythm', String, nullable=False),
-        Column('abc', String, nullable=False)
+        Column('source_setting', Integer, nullable=False),
+        Column('title', String, nullable=True),
+        Column('rhythm', String, nullable=True),
+        Column('abc', String, nullable=True),
+        UniqueConstraint('name',
+                        'source',
+                        'source_id',
+                        'source_setting',
+                        name='unique_index_tunes')
     )
 
     # The table containing the tunestarters
@@ -63,14 +81,15 @@ def create_schema(engine):
     Table('tunestarters_to_sets', metadata_obj,
         Column('tunestarter', Integer, nullable=False),
         Column('set', Integer, nullable=False),
-        UniqueConstraint('tunestarter', 'set', name='unique_index_1')
+        UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
     )
 
     # Bridging table, tunes to sets
     Table('tunes_to_sets', metadata_obj,
         Column('set', Integer, nullable=False),
         Column('tune', Integer, nullable=False),
-        Column('order', Integer, nullable=False)
+        Column('order', Integer, nullable=False),
+        UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
     )
     
     metadata_obj.create_all(engine)
