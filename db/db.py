@@ -20,6 +20,10 @@ def get_metadata():
         _metadata = MetaData()
     return _metadata
 
+def get_engine():
+    global _engine
+    return _engine
+
 def setup_db(path, debug=False):
     global _engine
     _engine = create_engine('sqlite:///{}'.format(path), echo = debug)
@@ -63,9 +67,11 @@ def create_schema(engine):
         Column('source', Integer, ForeignKey('sources.id')),
         Column('source_id', Integer, nullable=False),
         Column('source_setting', Integer, nullable=False),
+        Column('downloaded_timestamp', Integer, nullable=True), # Downloaded timestamp in unix time
         Column('title', String, nullable=True),
         Column('rhythm', String, nullable=True),
         Column('abc', String, nullable=True),
+        Column('label', String, nullable=True),
         UniqueConstraint('name',
                         'source',
                         'source_id',

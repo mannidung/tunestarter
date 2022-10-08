@@ -54,6 +54,7 @@ def add_set(tunestarter_id, name):
         result = get_connection().execute(set)
         for row in result:
             set_id = row[0]
+    return set_id
 
 def add_tune(set_id, tune_yaml):
     # If not ID nor name defined, we're doomed. Exit in error
@@ -73,7 +74,7 @@ def add_tune(set_id, tune_yaml):
     if "setting" in tune_yaml: 
         tune["source_setting"] = tune_yaml["setting"]
     else:
-        tune["source_setting"] = -1
+        tune["source_setting"] = 1
     
     # Get ID of source
     sources_table = get_metadata().tables['sources']
@@ -111,5 +112,6 @@ def add_tune(set_id, tune_yaml):
     except:
         utils.debug_print("tunes to set with tune id {} and set id {} already exists".format(tune_id, set_id))
     utils.debug_print("Tune with tuple {}, {}, {} handled successfully".format(tune["name"], tune["source_id"], tune["source_setting"]))
-    return
+    return tune_id
+
 __all__ = ['import_yaml']

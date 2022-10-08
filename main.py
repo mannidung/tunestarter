@@ -34,5 +34,6 @@ if __name__ == "__main__":
         shutil.rmtree(settings.settings["tmp_dir"])
 
     db.import_yaml(args.filepath[0])
+    db.download_tunes()
     #tunestarter = Tunestarter()
     #tunestarter.create_tunestarter(args.filepath[0])
