@@ -43,24 +43,17 @@ def add_tunestarter(name):
 
 def add_set(tunestarter_id, name):
     set_table = get_metadata().tables['sets']
-    ins = set_table.insert().values(name = name)
+    ins = set_table.insert().values(name = name, tunestarter_id = tunestarter_id)
     set_id = 0
     try:    
         result = get_connection().execute(ins)
         set_id = result.inserted_primary_key[0]
     except:
+        utils.debug_print("set with set name {} and tunestarter id {} already exists".format(name, tunestarter_id))
         set = set_table.select().where(set_table.c.name == name)
         result = get_connection().execute(set)
         for row in result:
             set_id = row[0]
-
-    tunestarters_to_sets_table = get_metadata().tables['tunestarters_to_sets']
-    ins = tunestarters_to_sets_table.insert().values(tunestarter = tunestarter_id, set = set_id)
-    try:
-        result = get_connection().execute(ins)
-    except:
-        utils.debug_print("tunestarter to set with tunestarter id {} and set id {} already exists".format(tunestarter_id, set_id))
-    return set_id
 
 def add_tune(set_id, tune_yaml):
     # If not ID nor name defined, we're doomed. Exit in error

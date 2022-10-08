@@ -45,7 +45,9 @@ def create_schema(engine):
     # Table containing sets.
     Table('sets', metadata_obj,
         Column('id', Integer, primary_key=True),
-        Column('name', String, nullable=False)
+        Column('name', String, nullable=False),
+        Column('tunestarter_id', Integer, ForeignKey('tunestarters.id')),
+        UniqueConstraint('name', 'tunestarter_id', name='unique_index_tunestarterstosets')
     )
 
     # Table containing sources, e.g. thesession, local, etc.
@@ -77,19 +79,13 @@ def create_schema(engine):
         Column('name', String, nullable=False, unique=True)
     )
 
-    # Bridging table, tunestarters to sets
-    Table('tunestarters_to_sets', metadata_obj,
-        Column('tunestarter', Integer, nullable=False),
-        Column('set', Integer, nullable=False),
-        UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
-    )
 
     # Bridging table, tunes to sets
     Table('tunes_to_sets', metadata_obj,
         Column('set', Integer, nullable=False),
         Column('tune', Integer, nullable=False),
-        Column('order', Integer, nullable=False),
-        UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
+        Column('order', Integer, nullable=False)
+        #UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
     )
     
     metadata_obj.create_all(engine)
