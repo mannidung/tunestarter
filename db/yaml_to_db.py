@@ -1,5 +1,6 @@
 import utils
 from .db import *
+from .tune import *
 
 def import_yaml(filepath):
         collection = utils.read_yaml(filepath)
@@ -25,9 +26,6 @@ def import_yaml(filepath):
             set_id = add_set(tunestarter_id, set_name)
             for tune_yaml in set_yaml["tunes"]:
                 add_tune(set_id, tune_yaml)
-                #tune = Tune(tune_yaml)
-                #self.add_tune(tune, set)
-            #self.add_set(set)
 
 def add_tunestarter(name):
     tunestarter_table = get_metadata().tables['tunestarters']
@@ -83,6 +81,12 @@ def add_tune(set_id, tune_yaml):
     source_id = result.fetchone().id
     utils.debug_print("Source ID is {}".format(source_id))
     tune["source"] = source_id
+
+    # Check if tune with name already exists and has been downloaded
+    with Session(get_engine()) as session:
+        found_tune = session.scalars(select(Tune).where(Tune.name == tune["name"])).first()
+        if found_tune != None and found_tune.downloaded_timestamp != None:
+            tune["source_id"] = found_tune.source_id
 
     # Write tune to database
     tunes_table = get_metadata().tables['tunes']

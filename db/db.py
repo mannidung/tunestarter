@@ -26,7 +26,7 @@ def get_engine():
 
 def setup_db(path, debug=False):
     global _engine
-    _engine = create_engine('sqlite:///{}'.format(path), echo = debug)
+    _engine = create_engine('sqlite:///{}'.format(path), echo = False)
     if not database_exists(_engine.url):
         create_database(_engine.url)
     create_schema(_engine)

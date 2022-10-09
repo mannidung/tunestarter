@@ -37,3 +37,7 @@ if __name__ == "__main__":
     db.download_tunes()
     #tunestarter = Tunestarter()
     #tunestarter.create_tunestarter(args.filepath[0])
+
+    # Cleanup
+    if os.path.exists(settings.settings["tmp_dir"]):
+        shutil.rmtree(settings.settings["tmp_dir"])

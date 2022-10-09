@@ -63,7 +63,7 @@ class Tune(Base):
         else:
             utils.debug_print("Not downloading")
             return
-        temp_path = os.path.join(settings.settings["storage"],
+        temp_path = os.path.join(settings.settings["tmp_dir"],
                                     '{}_{}_{}.abc'.format(self.source, self.source_id, self.source_setting))
         # Check if file exists, in which case we don't need to download it
         exists = False
@@ -89,32 +89,26 @@ class Tune(Base):
         return get_source_url_by_id(self.source, self.source_id, self.source_setting)
     
     def __url_from_name(self):
-        id = get_id_from_name(self.source, self.name)
-        self.source_id = id
+        # Check if name already exists in database
+        with Session(get_engine()) as session:
+            tune = session.scalars(select(Tune).where(Tune.name == self.name)).first()
+            if tune == None:
+                utils.debug_print("Tune {} not found in database, will try to get id from name...".format(self.name))
+                # Tune is not in database
+                self.source_id = get_id_from_name(self.source, self.name)
+            else:
+                # Tune is in database
+                # If downloaded timestamp is None, then it hasn't been downloaded.
+                # We need to get id from name and download it
+                if tune.downloaded_timestamp == None:
+                    utils.debug_print("Tune {} found in database but isn't downloaded, will try to download".format(self.name))
+                    self.source_id = get_id_from_name(self.source, self.name)
+                
         return self.__url_from_ID()
 
-"""  
-def download(self):
-        self.check_exists()
-        if not self.exists:
-            utils.debug_print("File with path {} does not exist, downloading from url {}".format(self.path, self.url))
-            request.urlretrieve(self.url, self.path)
-            utils.debug_print("File at url {} downloaded to path {}.".format(self.path, self.url))
-            self.exists = True
-    
-    def get_metadata(self):
-        if not self.check_exists():
-            self.download()
-        for tune in sjkabc.parse_file(self.path):
-            self.title = "".join(tune.title)
-            self.rhythm = "".join(tune.rhythm)
-        self.label = hashlib.md5(open(self.path,'rb').read()).hexdigest()
-        self.filename = os.path.join("tunes", self.rhythm, "{}.tex".format(self.label))
-"""
-
 def download_tunes():
-    non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
     with Session(get_engine()) as session:
+        non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
         tunes = session.scalars(non_downloaded_tunes).all()
         for tune in tunes:
             tune.download()
