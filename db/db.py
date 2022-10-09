@@ -48,9 +48,10 @@ def create_schema(engine):
 
     # Table containing sets.
     Table('sets', metadata_obj,
-        Column('id', Integer, primary_key=True),
-        Column('name', String, nullable=False),
-        Column('tunestarter_id', Integer, ForeignKey('tunestarters.id')),
+        Column('id', Integer, primary_key=True), # Primary key
+        Column('name', String, nullable=False), # Name of the set given in yaml
+        Column('title', String, nullable=False), # Proper title of the set, either the same as the yaml, or generated from tune titles
+        Column('tunestarter_id', Integer, ForeignKey('tunestarters.id')), # What tunestarter the set belongs to
         UniqueConstraint('name', 'tunestarter_id', name='unique_index_tunestarterstosets')
     )
 
@@ -62,21 +63,21 @@ def create_schema(engine):
 
     # The table containing the actual tunes and abc-data
     Table('tunes', metadata_obj,
-        Column('id', Integer, primary_key=True),
-        Column('name', String, nullable=False),
-        Column('source', Integer, ForeignKey('sources.id')),
-        Column('source_id', Integer, nullable=False),
-        Column('source_setting', Integer, nullable=False),
+        Column('id', Integer, primary_key=True), # Primary key
+        Column('name', String, nullable=False), # Name given in yaml file, used for search
+        Column('source', Integer, ForeignKey('sources.id')), # ID of source for file, e.g. thesession
+        Column('source_id', Integer, nullable=False), # ID of tune at the source
+        Column('source_setting', Integer, nullable=False), # Setting of the tune at the source
         Column('downloaded_timestamp', Integer, nullable=True), # Downloaded timestamp in unix time
-        Column('title', String, nullable=True),
-        Column('rhythm', String, nullable=True),
-        Column('abc', String, nullable=True),
-        Column('label', String, nullable=True),
+        Column('title', String, nullable=True), # Proper title of tune, from abc notation
+        Column('rhythm', String, nullable=True), # The rhythm (reel, jig, waltz, etc.) is it?
+        Column('abc', String, nullable=True), # The abc notation
+        Column('label', String, nullable=True), # Label, used for referencing in latex
         UniqueConstraint('name',
                         'source',
                         'source_id',
                         'source_setting',
-                        name='unique_index_tunes')
+                        name='unique_index_tunes') # Uniqueness constraint
     )
 
     # The table containing the tunestarters
