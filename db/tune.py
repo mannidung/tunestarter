@@ -63,8 +63,7 @@ class Tune(Base):
         else:
             utils.debug_print("Not downloading")
             return
-        temp_path = os.path.join(settings.settings["tmp_dir"],
-                                    '{}_{}_{}.abc'.format(self.source, self.source_id, self.source_setting))
+        temp_path = self.__get_temp_path()
         # Check if file exists, in which case we don't need to download it
         exists = False
         if os.path.exists(temp_path):
@@ -77,13 +76,18 @@ class Tune(Base):
             self.downloaded_timestamp = int(time.time())
             utils.debug_print("timestamp: {}".format(self.downloaded_timestamp))
             utils.debug_print("File at url {} downloaded to path {}.".format(temp_path, url))
-        for tune in sjkabc.parse_file(temp_path):
+        self.__parse_abc(temp_path)
+        self.label = hashlib.md5(open(temp_path,'rb').read()).hexdigest()
+    
+    def __parse_abc(self, path):
+        for tune in sjkabc.parse_file(path):
             self.title = "".join(tune.title)
             self.rhythm = "".join(tune.rhythm)
             self.abc = "".join(tune.abc)
-        self.label = hashlib.md5(open(temp_path,'rb').read()).hexdigest()
-        
-        
+
+    def __get_temp_path(self):
+        return os.path.join(settings.settings["storage"],
+                                    '{}_{}_{}.abc'.format(self.source, self.source_id, self.source_setting))
         
     def __url_from_ID(self):
         return get_source_url_by_id(self.source, self.source_id, self.source_setting)

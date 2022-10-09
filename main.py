@@ -39,5 +39,5 @@ if __name__ == "__main__":
     #tunestarter.create_tunestarter(args.filepath[0])
 
     # Cleanup
-    if os.path.exists(settings.settings["tmp_dir"]):
-        shutil.rmtree(settings.settings["tmp_dir"])
+    if os.path.exists(settings.settings["storage"]):
+        shutil.rmtree(settings.settings["storage"])

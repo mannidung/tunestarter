@@ -1,4 +1,5 @@
 ---
+  storage: "./storage"
   tmp_dir: "./tmp"
   debug_mode: True
   db: "./tunestarter.db"
