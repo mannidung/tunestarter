@@ -116,5 +116,4 @@ def download_tunes():
         tunes = session.scalars(non_downloaded_tunes).all()
         for tune in tunes:
             tune.download()
-        session.flush()
         session.commit()
