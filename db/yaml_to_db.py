@@ -6,7 +6,7 @@ def import_yaml(filepath):
         collection = utils.read_yaml(filepath)
         ts_name = collection["name"]
         tunestarter_id = add_tunestarter(ts_name)
-        utils.debug_print("Tunestarter \"{}\" created with id {}".format(ts_name, id))
+        utils.debug_print("Tunestarter \"{}\" created with id {}".format(ts_name, tunestarter_id))
         for set_yaml in collection["sets"]:
             utils.debug_print("Processing set {}".format(set_yaml))
             set_name = ""
@@ -24,8 +24,11 @@ def import_yaml(filepath):
                     if "setting" in tune_yaml:
                         set_name = set_name + "{}".format(tune_yaml["setting"])
             set_id = add_set(tunestarter_id, set_name)
+            order = 1
             for tune_yaml in set_yaml["tunes"]:
-                add_tune(set_id, tune_yaml)
+                tune_id = add_tune(set_id, tune_yaml)
+                link_set_and_tune(set_id, tune_id, order)
+                order = order + 1
 
 def add_tunestarter(name):
     tunestarter_table = get_metadata().tables['tunestarters']
@@ -41,9 +44,9 @@ def add_tunestarter(name):
 
 def add_set(tunestarter_id, name):
     set_table = get_metadata().tables['sets']
-    ins = set_table.insert().values(name = name, tunestarter_id = tunestarter_id)
     set_id = 0
-    try:    
+    try:
+        ins = set_table.insert().values(name = name, tunestarter_id = tunestarter_id)
         result = get_connection().execute(ins)
         set_id = result.inserted_primary_key[0]
     except:
@@ -117,5 +120,17 @@ def add_tune(set_id, tune_yaml):
         utils.debug_print("tunes to set with tune id {} and set id {} already exists".format(tune_id, set_id))
     utils.debug_print("Tune with tuple {}, {}, {} handled successfully".format(tune["name"], tune["source_id"], tune["source_setting"]))
     return tune_id
+
+def link_set_and_tune(set_id, tune_id, order):
+    table = get_metadata().tables['tunes_to_sets']
+    ins = table.insert().values(set = set_id, tune = tune_id, order = order)
+    try:    
+        result = get_connection().execute(ins)
+        result.inserted_primary_key[0]
+        utils.debug_print("Set with id {} and tune with id {} linked, order {}".format(set_id, tune_id, order))
+        return
+    except:
+        utils.debug_print("Linking with set id {}, tune id {}, and order {} already exists, doing nothing...".format(set_id, tune_id, order))
+        return
 
 __all__ = ['import_yaml']

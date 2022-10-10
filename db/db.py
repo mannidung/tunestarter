@@ -26,7 +26,7 @@ def get_engine():
 
 def setup_db(path, debug=False):
     global _engine
-    _engine = create_engine('sqlite:///{}'.format(path), echo = False)
+    _engine = create_engine('sqlite:///{}'.format(path), echo = True)
     if not database_exists(_engine.url):
         create_database(_engine.url)
     create_schema(_engine)
@@ -50,9 +50,9 @@ def create_schema(engine):
     Table('sets', metadata_obj,
         Column('id', Integer, primary_key=True), # Primary key
         Column('name', String, nullable=False), # Name of the set given in yaml
-        Column('title', String, nullable=False), # Proper title of the set, either the same as the yaml, or generated from tune titles
+        Column('title', String, nullable=True), # Proper title of the set, either the same as the yaml, or generated from tune titles
         Column('tunestarter_id', Integer, ForeignKey('tunestarters.id')), # What tunestarter the set belongs to
-        UniqueConstraint('name', 'tunestarter_id', name='unique_index_tunestarterstosets')
+        UniqueConstraint('name', 'tunestarter_id', name='unique_index_sets')
     )
 
     # Table containing sources, e.g. thesession, local, etc.
@@ -91,8 +91,8 @@ def create_schema(engine):
     Table('tunes_to_sets', metadata_obj,
         Column('set', Integer, nullable=False),
         Column('tune', Integer, nullable=False),
-        Column('order', Integer, nullable=False)
-        #UniqueConstraint('tunestarter', 'set', name='unique_index_tunestarterstosets')
+        Column('order', Integer, nullable=False),
+        UniqueConstraint('set', 'tune', 'order', name='unique_index_tunestarterstosets')
     )
     
     metadata_obj.create_all(engine)
