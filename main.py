@@ -25,26 +25,26 @@ parser.add_argument('--keeptmp',
                     help='the tmp file will be kept after generation is done (good for debugging)')
 
 if __name__ == "__main__":
-    try:
-        settings.read_setup()
-        args = parser.parse_args()
-        
-        # Should the temporary directory be kept afterwards?
-        if args.keeptmp:
-            settings.settings["keeptmp"] = True
+    #try:
+    settings.read_setup()
+    args = parser.parse_args()
+    
+    # Should the temporary directory be kept afterwards?
+    if args.keeptmp:
+        settings.settings["keeptmp"] = True
 
-        db.import_yaml(args.filepath[0])
-        db.download_tunes()
-        #db.test()
+    db.import_yaml(args.filepath[0])
+    db.download_tunes()
+    db.test()
 
-        #tunestarter = Tunestarter()
-        #tunestarter.create_tunestarter(args.filepath[0])
+    #tunestarter = Tunestarter()
+    #tunestarter.create_tunestarter(args.filepath[0])
 
-        # Cleanup
-        if os.path.exists(settings.settings["storage"]):
-            shutil.rmtree(settings.settings["storage"])
-    except Exception as e:
-        logger.debug("Exception! Panicking!")
-        logger.debug("{}".format(str(e)))
-        if os.path.exists(settings.settings["storage"]):
-            shutil.rmtree(settings.settings["storage"])
+    # Cleanup
+    if os.path.exists(settings.settings["storage"]):
+        shutil.rmtree(settings.settings["storage"])
+    #except Exception as e:
+    #    logger.debug("Exception! Panicking!")
+    #    logger.debug("{}".format(str(e)))
+    #    if os.path.exists(settings.settings["storage"]):
+    #        shutil.rmtree(settings.settings["storage"])

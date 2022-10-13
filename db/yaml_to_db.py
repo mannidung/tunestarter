@@ -62,27 +62,42 @@ def add_set(tunestarter_id, name):
     return set_id
 
 def add_tune(set_id, tune_yaml):
-    logger.debug("test")
+    logger.debug("Adding tune {} to set with ID {}".format(tune_yaml, set_id))
     # If not ID nor name defined, we're doomed. Exit in error
     if ("id" not in tune_yaml) and ("name" not in tune_yaml):
+        logger.error("Neither name nor ID was defined")
         raise ValueError('Either name or id must be defined')
     if "source" not in tune_yaml:
+        logger.error("No source defined")
         raise ValueError('Source needs to be defined')
     tune = {}
+
+    logger.debug("Checking if yaml contains source id.")
     if "id" in tune_yaml:
+        logger.debug("Key ID with value {} found in tune\'s yaml. Using this value for source_id".format(tune_yaml["id"]))
         tune["source_id"] = tune_yaml["id"]
     else:
+        logger.debug("No key ID found in tune\'s yaml. Using ID -1")
         tune["source_id"] = -1
+    
+    logger.debug("Checking if yaml contains name.")
     if "name" in tune_yaml:
+        logger.debug("Key name with value {} found in tune\'s yaml. Using this value for name".format(tune_yaml["name"]))
         tune["name"] = tune_yaml["name"]
     else:
+        logger.debug("No key \'name\' found in tune\'s yaml. Using name N/A")
         tune["name"] = "N/A"
+
+    logger.debug("Checking if yaml contains setting.")
     if "setting" in tune_yaml: 
+        logger.debug("Key setting with value {} found in tune\'s yaml. Using this value for source_setting".format(tune_yaml["setting"]))
         tune["source_setting"] = tune_yaml["setting"]
     else:
+        logger.debug("No key \'setting\' found in tune\'s yaml. Using setting 1")
         tune["source_setting"] = 1
     
     # Get ID of source
+    logger.debug("Get the ID of source")
     sources_table = get_metadata().tables['sources']
     source = sources_table.select().where(sources_table.c.name == tune_yaml["source"])
     result = get_connection().execute(source)
@@ -91,10 +106,12 @@ def add_tune(set_id, tune_yaml):
     tune["source"] = source_id
 
     # Check if tune with name already exists and has been downloaded
-    with Session(get_engine()) as session:
-        found_tune = session.scalars(select(Tune).where(Tune.name == tune["name"])).first()
-        if found_tune != None and found_tune.downloaded_timestamp != None:
-            tune["source_id"] = found_tune.source_id
+    # Only check this if ID is not set!
+    if tune["source_id"] == -1:
+        with Session(get_engine()) as session:
+            found_tune = session.scalars(select(Tune).where(Tune.name == tune["name"])).first()
+            if found_tune != None and found_tune.downloaded_timestamp != None:
+                tune["source_id"] = found_tune.source_id
 
     # Write tune to database
     tunes_table = get_metadata().tables['tunes']
@@ -123,7 +140,7 @@ def add_tune(set_id, tune_yaml):
         result = get_connection().execute(ins)
     except:
         logger.debug("tunes to set with tune id {} and set id {} already exists".format(tune_id, set_id))
-    logger.debug("Tune with tuple {}, {}, {} handled successfully".format(tune["name"], tune["source_id"], tune["source_setting"]))
+    logger.debug("Tune with tuple {}, {}, {} handled successfully, saved with ID {}".format(tune["name"], tune["source_id"], tune["source_setting"], tune_id))
     return tune_id
 
 def link_set_and_tune(set_id, tune_id, order):

@@ -17,7 +17,7 @@ def read_setup():
         logger.debug("Storage folder does not exist, creating...")
         os.mkdir(settings["storage"])
     else: # Remove old storage and create new one
-        shutil.rmtree(settings.settings["storage"])
+        shutil.rmtree(settings["storage"])
         os.mkdir(settings["storage"])
 
     # Clean up any tmp dir that might already exist
