@@ -2,8 +2,8 @@ import hashlib
 import time
 from .sources import *
 from .db import *
-import utils
 import settings
+import logging
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String
@@ -15,6 +15,7 @@ import sjkabc
 import urllib.request as request
 
 Base = declarative_base()
+logger = logging.getLogger(__name__)
 
 class Tune(Base):
     __tablename__ = 'tunes'
@@ -53,29 +54,33 @@ class Tune(Base):
                                 self.label)
 
     def download(self):
+        logger.debug("Starting download of tune with name {}, id {}, setting {}".format(
+                                                                                        self.name,
+                                                                                        self.source_id,
+                                                                                        self.source_setting))
         url = ""
         if self.source_id > 0:
-            utils.debug_print("Downloading by ID")
+            logger.debug("Downloading by ID")
             url = self.__url_from_ID()
         elif self.name != None:
-            utils.debug_print("Downloading by name")
+            logger.debug("Downloading by name")
             url = self.__url_from_name()
         else:
-            utils.debug_print("Not downloading")
+            logger.debug("Not downloading")
             return
         temp_path = self.__get_temp_path()
         # Check if file exists, in which case we don't need to download it
         exists = False
         if os.path.exists(temp_path):
-            utils.debug_print("File with path {} already exists, setting tune.existing to True".format(temp_path))
+            logger.debug("File with path {} already exists, setting tune.existing to True".format(temp_path))
             exists = True
         if not exists:
             # Download it
-            utils.debug_print("File with path {} does not exist, downloading from url {}".format(temp_path, url))
+            logger.debug("File with path {} does not exist, downloading from url {}".format(temp_path, url))
             request.urlretrieve(url, temp_path)
             self.downloaded_timestamp = int(time.time())
-            utils.debug_print("timestamp: {}".format(self.downloaded_timestamp))
-            utils.debug_print("File at url {} downloaded to path {}.".format(temp_path, url))
+            logger.debug("timestamp: {}".format(self.downloaded_timestamp))
+            logger.debug("File at url {} downloaded to path {}.".format(temp_path, url))
         self.__parse_abc(temp_path)
         self.label = hashlib.md5(open(temp_path,'rb').read()).hexdigest()
     
@@ -97,7 +102,7 @@ class Tune(Base):
         with Session(get_engine()) as session:
             tune = session.scalars(select(Tune).where(Tune.name == self.name)).first()
             if tune == None:
-                utils.debug_print("Tune {} not found in database, will try to get id from name...".format(self.name))
+                logger.debug("Tune {} not found in database, will try to get id from name...".format(self.name))
                 # Tune is not in database
                 self.source_id = get_id_from_name(self.source, self.name)
             else:
@@ -105,15 +110,17 @@ class Tune(Base):
                 # If downloaded timestamp is None, then it hasn't been downloaded.
                 # We need to get id from name and download it
                 if tune.downloaded_timestamp == None:
-                    utils.debug_print("Tune {} found in database but isn't downloaded, will try to download".format(self.name))
+                    logger.debug("Tune {} found in database but isn't downloaded, will try to download".format(self.name))
                     self.source_id = get_id_from_name(self.source, self.name)
                 
         return self.__url_from_ID()
 
 def download_tunes():
+    logger.debug("Starting downloading of tunes ####")
     with Session(get_engine()) as session:
         non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
         tunes = session.scalars(non_downloaded_tunes).all()
         for tune in tunes:
             tune.download()
+        session.flush()
         session.commit()

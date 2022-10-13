@@ -1,10 +1,13 @@
 from db.tune import Tune
 from .db import *
+import logging
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
+
+logger = logging.getLogger(__name__)
 
 Base = declarative_base()
 

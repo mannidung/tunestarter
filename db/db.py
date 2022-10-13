@@ -3,6 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import MetaData, select
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy_utils import database_exists, create_database
+import logging
+
+logger = logging.getLogger(__name__)
 
 _connection = None
 _engine = None
@@ -26,7 +29,7 @@ def get_engine():
 
 def setup_db(path, debug=False):
     global _engine
-    _engine = create_engine('sqlite:///{}'.format(path), echo = True)
+    _engine = create_engine('sqlite:///{}'.format(path), echo = False)
     if not database_exists(_engine.url):
         create_database(_engine.url)
     create_schema(_engine)

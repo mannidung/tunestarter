@@ -6,6 +6,9 @@ import utils
 import setprocessor
 from tunestarter import Tunestarter
 import argparse
+import logging
+
+logger = logging.getLogger(__name__)
 
 this_setup = None
 debug = True
@@ -30,20 +33,18 @@ if __name__ == "__main__":
         if args.keeptmp:
             settings.settings["keeptmp"] = True
 
-        # Clean up any tmp dir that might already exist
-        if os.path.exists(settings.settings["tmp_dir"]):
-            shutil.rmtree(settings.settings["tmp_dir"])
-
         db.import_yaml(args.filepath[0])
-        #db.download_tunes()
-        db.test()
+        db.download_tunes()
+        #db.test()
 
         #tunestarter = Tunestarter()
         #tunestarter.create_tunestarter(args.filepath[0])
 
         # Cleanup
+        if os.path.exists(settings.settings["storage"]):
+            shutil.rmtree(settings.settings["storage"])
     except Exception as e:
-        utils.debug_print("Exception! Panicking!")
-        utils.debug_print("{}".format(str(e)))
+        logger.debug("Exception! Panicking!")
+        logger.debug("{}".format(str(e)))
         if os.path.exists(settings.settings["storage"]):
             shutil.rmtree(settings.settings["storage"])
