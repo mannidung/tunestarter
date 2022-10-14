@@ -2,9 +2,11 @@ import settings
 import os
 import shutil
 import db
-from tunestarter import Tunestarter
+from latex import Tunestarter_latex
 import argparse
 import logging
+
+from tunestarter.tune import Tune
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +34,9 @@ if __name__ == "__main__":
         settings.settings["keeptmp"] = True
 
     tunestarter_id = db.import_yaml(args.filepath[0])
-    tunestarter = Tunestarter.get_tunestarter(tunestarter_id)
-    tunestarter.prepare()
+    tunestarter = Tunestarter_latex(tunestarter_id)
+
+    #latex.cleanup_boilerplate()
     #db.download_tunes()
     #db.prepare_sets(tunestarter_id)
 

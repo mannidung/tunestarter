@@ -1,3 +1,4 @@
+from unittest import case
 import db
 import logging
 from . import Tune, Set
@@ -44,10 +45,33 @@ class Tunestarter(Base):
         for set in sets:
             set.prepare_set()
 
-    def get_sets(self):
+    def get_sets(self, order_by="id"):
         with Session(db.get_engine()) as session:
-            sets = session.scalars(select(Set).where(Set.tunestarter_id == self.id)).all()
-            return sets
+            if order_by == "id":
+                logger.debug("Returning sets ordered by id")
+                return session.scalars(select(Set)
+                                        .where(Set.tunestarter_id == self.id)
+                                        .order_by(Set.id)).all()
+            elif order_by == "name":
+                logger.debug("Returning sets ordered by name")
+                return session.scalars(select(Set)
+                                        .where(Set.tunestarter_id == self.id)
+                                        .order_by(Set.name)).all()
+            elif order_by == "title":
+                logger.debug("Returning sets ordered by title")
+                return session.scalars(select(Set)
+                                        .where(Set.tunestarter_id == self.id)
+                                        .order_by(Set.title)).all()
+            elif order_by == "rhythm":
+                logger.debug("Returning sets ordered by rhythm")
+                return session.scalars(select(Set)
+                                        .where(Set.tunestarter_id == self.id)
+                                        .order_by(Set.rhythm)).all()
+            else:
+                logger.debug("Did not recognise order_by parameter. Returning sets ordered by id (default)")
+                return session.scalars(select(Set)
+                                        .where(Set.tunestarter_id == self.id)
+                                        .order_by(Set.id)).all()
     
     @classmethod
     def get_tunestarter(Tunestarter, id):
