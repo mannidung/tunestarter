@@ -33,9 +33,9 @@ if __name__ == "__main__":
     if args.keeptmp:
         settings.settings["keeptmp"] = True
 
-    db.import_yaml(args.filepath[0])
+    tunestarter_id = db.import_yaml(args.filepath[0])
     db.download_tunes()
-    db.test()
+    db.prepare_sets(tunestarter_id)
 
     #tunestarter = Tunestarter()
     #tunestarter.create_tunestarter(args.filepath[0])

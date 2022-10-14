@@ -9,5 +9,5 @@ __all__ = [
     "get_metadata",
     "setup_db",
     "download_tunes",
-    "test"
+    "prepare_sets"
 ]

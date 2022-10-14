@@ -33,6 +33,7 @@ def import_yaml(filepath):
                 tune_id = add_tune(set_id, tune_yaml)
                 link_set_and_tune(set_id, tune_id, order)
                 order = order + 1
+        return tunestarter_id
 
 def add_tunestarter(name):
     tunestarter_table = get_metadata().tables['tunestarters']
