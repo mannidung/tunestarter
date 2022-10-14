@@ -53,22 +53,7 @@ class Set_latex:
             strings.append("{} \\\\ \n".format(tune.title))
             strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
             strings.append("\\begin{{abc}}[name={}-set] \n".format(tune.label))
-            """
-            X: 1
-            T: Belles Of Tipperary, The X
-            Z: b.maloney X
-            S: https://thesession.org/tunes/769#setting769
-            R: reel
-            M: 4/4
-            L: 1/8
-            K: Dmaj
-            transcription = Column(String)
-            metre = Column(String)
-            unit_note_length = Column(String)
-            key = Column(String)
-            source = Column(String)
-            """
-            strings.append("X: " + "1" + "\n")
+            strings.append("X: " + "1" + "\n") # THIS ROW IS IMPORTANT! WITHOUT X, PS FILES WILL NOT BE GENERATED!
             strings.append("Z: " + tune.transcription + "\n")
             strings.append("M: " + tune.metre + "\n")
             strings.append("L: " + tune.note_length + "\n")
