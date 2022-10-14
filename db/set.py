@@ -1,3 +1,4 @@
+import hashlib
 from db.tune import Tune
 from .db import *
 import logging
@@ -15,6 +16,7 @@ class Set(Base):
     __tablename__ = 'sets'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    label = Column(String)
     title = Column(String)
     rhythm = Column(String)
     tunestarter_id = Column(Integer)
@@ -23,11 +25,13 @@ class Set(Base):
         return "\n\t---\n\t"\
                 "ID: {} \n\t"\
                 "Name: {}\n\t"\
+                "Label: {}\n\t"\
                 "Title: {}\n\t"\
                 "Rhythm: {}\n\t"\
                 "Tunestarter_id: {}\n\t"\
                 "---\n".format(self.id,
                                 self.name,
+                                self.label,
                                 self.title,
                                 self.rhythm,
                                 self.tunestarter_id,
@@ -44,7 +48,19 @@ class Set(Base):
             for row in result:
                 tunes.append(session.scalars(select(Tune).where(Tune.id == row[1])).first())
             return tunes
-    
+
+    def prepare_set(self):
+        self.set_label()
+        self.set_rhythm()
+        self.set_title()
+
+    def set_label(self):
+        with Session(get_engine()) as session:
+            session.add(self)
+            hash_string = self.name + str(self.id)
+            self.label = hashlib.md5(hash_string.encode('utf-8')).hexdigest()
+            session.commit()
+
     def set_title(self):
         with Session(get_engine()) as session:
             session.add(self)
@@ -67,41 +83,33 @@ class Set(Base):
             session.commit()
     
     def set_rhythm(self):
-        logger.debug("Setting rhythm of set {}".format(self.id))
-        tunes = self.tunes()
-        index = 0
-        rhythm = ""
-        for tune in tunes:
-            if index == 0:
-                logger.debug("First tune has rhythm {}".format(tune.rhythm))
-                rhythm = tune.rhythm
-            else:
-                if rhythm != tune.rhythm:
-                    logger.debug("One of the tunes differ in rhythm, has rhythm {}. Setting rhythm to mixed".format(tune.rhythm))
-                    rhythm = "mixed"
-                    break
-            index = index + 1
-        logger.debug("Set rhythm is {}".format(rhythm))
-        setattr(self, 'rhythm', rhythm)
-        #self.rhythm = rhythm
         with Session(get_engine()) as session:
-            logger.debug("Saving rhythm to database")
             session.add(self)
+            logger.debug("Setting rhythm of set {}".format(self.id))
+            tunes = self.tunes()
+            index = 0
+            rhythm = ""
+            for tune in tunes:
+                if index == 0:
+                    logger.debug("First tune has rhythm {}".format(tune.rhythm))
+                    rhythm = tune.rhythm
+                else:
+                    if rhythm != tune.rhythm:
+                        logger.debug("One of the tunes differ in rhythm, has rhythm {}. Setting rhythm to mixed".format(tune.rhythm))
+                        rhythm = "mixed"
+                        break
+                index = index + 1
+            logger.debug("Set rhythm is {}".format(rhythm))
+            setattr(self, 'rhythm', rhythm)
+            #self.rhythm = rhythm
+            logger.debug("Saving rhythm to database")
             session.commit()
 
-def prepare_sets(tunestarter_id):
-    sets = get_sets(tunestarter_id)
-    for set in sets:
-        set.set_rhythm()
-        set.set_title()
+    @classmethod
+    def get_set(id):
+        with Session(get_engine()) as session:
+            set = session.scalars(select(Set).where(Set.id == id)).first()
+            #print(set)
+            return set
 
-def get_set(id):
-    with Session(get_engine()) as session:
-        set = session.scalars(select(Set).where(Set.id == id)).first()
-        #print(set)
-        return set
-
-def get_sets(tunestarter_id):
-    with Session(get_engine()) as session:
-        sets = session.scalars(select(Set).where(Set.tunestarter_id == tunestarter_id)).all()
-        return sets
+    

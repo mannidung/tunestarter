@@ -53,6 +53,7 @@ def create_schema(engine):
     Table('sets', metadata_obj,
         Column('id', Integer, primary_key=True), # Primary key
         Column('name', String, nullable=False), # Name of the set given in yaml
+        Column('label', String, nullable=True), # Label of set, used for referencing in Latex
         Column('title', String, nullable=True), # Proper title of the set, either the same as the yaml, or generated from tune titles
         Column('rhythm', String, nullable=True), # Proper title of the set, either the same as the yaml, or generated from tune titles
         Column('tunestarter_id', Integer, ForeignKey('tunestarters.id')), # What tunestarter the set belongs to

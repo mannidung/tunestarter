@@ -4,7 +4,7 @@ import shutil
 import db
 import utils
 import setprocessor
-from tunestarter import Tunestarter
+from db import Tunestarter
 import argparse
 import logging
 
@@ -34,8 +34,10 @@ if __name__ == "__main__":
         settings.settings["keeptmp"] = True
 
     tunestarter_id = db.import_yaml(args.filepath[0])
-    db.download_tunes()
-    db.prepare_sets(tunestarter_id)
+    tunestarter = Tunestarter.get_tunestarter(tunestarter_id)
+    tunestarter.prepare()
+    #db.download_tunes()
+    #db.prepare_sets(tunestarter_id)
 
     #tunestarter = Tunestarter()
     #tunestarter.create_tunestarter(args.filepath[0])

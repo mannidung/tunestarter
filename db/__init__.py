@@ -2,6 +2,7 @@ from .db import *
 from .yaml_to_db import *
 from .tune import *
 from .set import *
+from .tunestarter import *
 
 __all__ = [
     "import_yaml",
@@ -9,5 +10,6 @@ __all__ = [
     "get_metadata",
     "setup_db",
     "download_tunes",
-    "prepare_sets"
+    "prepare_sets",
+    "Tunestarter"
 ]

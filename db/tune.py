@@ -115,12 +115,13 @@ class Tune(Base):
                 
         return self.__url_from_ID()
 
-def download_tunes():
-    logger.debug("Starting downloading of tunes ####")
-    with Session(get_engine()) as session:
-        non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
-        tunes = session.scalars(non_downloaded_tunes).all()
-        for tune in tunes:
-            tune.download()
-        session.flush()
-        session.commit()
+    @classmethod
+    def download_tunes(Tune):
+        logger.debug("Starting downloading of tunes ####")
+        with Session(get_engine()) as session:
+            non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
+            tunes = session.scalars(non_downloaded_tunes).all()
+            for tune in tunes:
+                tune.download()
+            session.flush()
+            session.commit()
