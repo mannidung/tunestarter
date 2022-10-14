@@ -1,9 +1,10 @@
-from db import *
+import db
 import logging
 from . import Tune, Set
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -44,13 +45,13 @@ class Tunestarter(Base):
             set.prepare_set()
 
     def get_sets(self):
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             sets = session.scalars(select(Set).where(Set.tunestarter_id == self.id)).all()
             return sets
     
     @classmethod
     def get_tunestarter(Tunestarter, id):
         logger.debug("Return tunestarter object for tunestarter with ID {}".format(id))
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             tunestarter = session.scalars(select(Tunestarter).where(Tunestarter.id == id)).first()
             return tunestarter

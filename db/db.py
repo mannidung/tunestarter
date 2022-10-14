@@ -1,6 +1,6 @@
 from enum import unique
 from sqlalchemy import create_engine
-from sqlalchemy import MetaData, select
+from sqlalchemy import MetaData
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy_utils import database_exists, create_database
 import logging

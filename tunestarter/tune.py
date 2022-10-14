@@ -1,12 +1,13 @@
 import hashlib
 import time
 from sources import *
-from db import *
+import db
 import settings
 import logging
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -99,7 +100,7 @@ class Tune(Base):
     
     def __url_from_name(self):
         # Check if name already exists in database
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             tune = session.scalars(select(Tune).where(Tune.name == self.name)).first()
             if tune == None:
                 logger.debug("Tune {} not found in database, will try to get id from name...".format(self.name))
@@ -118,7 +119,7 @@ class Tune(Base):
     @classmethod
     def download_tunes(Tune):
         logger.debug("Starting downloading of tunes ####")
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             non_downloaded_tunes = select(Tune).where(Tune.downloaded_timestamp == None)
             tunes = session.scalars(non_downloaded_tunes).all()
             for tune in tunes:

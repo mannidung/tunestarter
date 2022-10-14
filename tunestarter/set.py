@@ -1,10 +1,11 @@
 import hashlib
-from db import *
+import db
 from . import Tune
 import logging
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -38,8 +39,8 @@ class Set(Base):
                                 )
     
     def tunes(self):
-        tunes_to_sets_table = get_metadata().tables['tunes_to_sets']
-        with Session(get_engine()) as session:
+        tunes_to_sets_table = db.get_metadata().tables['tunes_to_sets']
+        with Session(db.get_engine()) as session:
             #set = session.scalars(select(Set).where(Set.id == id)).first()
             result = session.execute(select(tunes_to_sets_table)
                                     .where(tunes_to_sets_table.c.set == self.id)
@@ -55,14 +56,14 @@ class Set(Base):
         self.set_title()
 
     def set_label(self):
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             session.add(self)
             hash_string = self.name + str(self.id)
             self.label = hashlib.md5(hash_string.encode('utf-8')).hexdigest()
             session.commit()
 
     def set_title(self):
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             session.add(self)
             logger.debug("Setting title of set {}".format(self.id))
             if "TMP" not in self.name:
@@ -83,7 +84,7 @@ class Set(Base):
             session.commit()
     
     def set_rhythm(self):
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             session.add(self)
             logger.debug("Setting rhythm of set {}".format(self.id))
             tunes = self.tunes()
@@ -107,7 +108,7 @@ class Set(Base):
 
     @classmethod
     def get_set(id):
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             set = session.scalars(select(Set).where(Set.id == id)).first()
             #print(set)
             return set
