@@ -1,4 +1,3 @@
-from enum import unique
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, UniqueConstraint
@@ -97,8 +96,8 @@ def create_schema(engine):
 
     # Bridging table, tunes to sets
     Table('tunes_to_sets', metadata_obj,
-        Column('set', Integer, nullable=False),
-        Column('tune', Integer, nullable=False),
+        Column('set', Integer, ForeignKey('sets.id'), nullable=False),
+        Column('tune', Integer, ForeignKey('tunes.id'), nullable=False),
         Column('order', Integer, nullable=False),
         UniqueConstraint('set', 'tune', 'order', name='unique_index_tunestarterstosets')
     )

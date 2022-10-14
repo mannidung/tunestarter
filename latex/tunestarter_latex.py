@@ -5,6 +5,7 @@ import settings
 import logging
 
 from .set_latex import Set_latex
+from .tune_latex import Tune_latex
 
 from tunestarter import Tunestarter
 
@@ -61,4 +62,7 @@ class Tunestarter_latex:
         sets = self.tunestarter.get_sets(order_by="rhythm")
         for set in sets:
             Set_latex(set)
+        tunes = self.tunestarter.get_tunes()
+        for tune in tunes:
+            Tune_latex(tune)
         return None

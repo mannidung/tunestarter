@@ -1,7 +1,7 @@
 import settings
 import os
 import shutil
-import db
+import yaml_import
 from latex import Tunestarter_latex
 import argparse
 import logging
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     if args.keeptmp:
         settings.settings["keeptmp"] = True
 
-    tunestarter_id = db.import_yaml(args.filepath[0])
+    tunestarter_id = yaml_import.import_yaml(args.filepath[0])
     tunestarter = Tunestarter_latex(tunestarter_id)
 
     #latex.cleanup_boilerplate()

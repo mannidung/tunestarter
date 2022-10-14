@@ -106,7 +106,7 @@ class Tune(Base):
             self.metre = "".join(tune.metre)
             self.note_length = "".join(tune.note_length)
             self.key = "".join(tune.key)
-            self.abc = "".join(tune.abc)
+            self.abc = "\n".join(tune.abc)
 
     def __get_temp_path(self):
         return os.path.join(settings.settings["storage"],
@@ -143,3 +143,9 @@ class Tune(Base):
                 tune.download()
             session.flush()
             session.commit()
+    
+    @classmethod
+    def get_tune(Tune, id):
+        with Session(db.get_engine()) as session:
+            Tune = session.scalars(select(Tune).where(Tune.id == id)).first()
+            return Tune

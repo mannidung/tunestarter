@@ -1,5 +1,5 @@
 import utils
-from .db import *
+import db
 import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -38,28 +38,28 @@ def import_yaml(filepath):
         return tunestarter_id
 
 def add_tunestarter(name):
-    tunestarter_table = get_metadata().tables['tunestarters']
+    tunestarter_table = db.get_metadata().tables['tunestarters']
     ins = tunestarter_table.insert().values(name = name)
     try:
-        result = get_connection().execute(ins)
+        result = db.get_connection().execute(ins)
         return result.inserted_primary_key[0]
     except:
         tunestarter = tunestarter_table.select().where(tunestarter_table.c.name == name)
-        result = get_connection().execute(tunestarter)
+        result = db.get_connection().execute(tunestarter)
         for row in result:
             return row[0]
 
 def add_set(tunestarter_id, name):
-    set_table = get_metadata().tables['sets']
+    set_table = db.get_metadata().tables['sets']
     set_id = 0
     try:
         ins = set_table.insert().values(name = name, tunestarter_id = tunestarter_id)
-        result = get_connection().execute(ins)
+        result = db.get_connection().execute(ins)
         set_id = result.inserted_primary_key[0]
     except:
         logger.debug("set with set name {} and tunestarter id {} already exists".format(name, tunestarter_id))
         set = set_table.select().where(set_table.c.name == name)
-        result = get_connection().execute(set)
+        result = db.get_connection().execute(set)
         for row in result:
             set_id = row[0]
     return set_id
@@ -101,9 +101,9 @@ def add_tune(set_id, tune_yaml):
     
     # Get ID of source
     logger.debug("Get the ID of source")
-    sources_table = get_metadata().tables['sources']
+    sources_table = db.get_metadata().tables['sources']
     source = sources_table.select().where(sources_table.c.name == tune_yaml["source"])
-    result = get_connection().execute(source)
+    result = db.get_connection().execute(source)
     source_id = result.fetchone().id
     logger.debug("Source ID is {}".format(source_id))
     tune["source"] = source_id
@@ -111,13 +111,13 @@ def add_tune(set_id, tune_yaml):
     # Check if tune with name already exists and has been downloaded
     # Only check this if ID is not set!
     if tune["source_id"] == -1:
-        with Session(get_engine()) as session:
+        with Session(db.get_engine()) as session:
             found_tune = session.scalars(select(Tune).where(Tune.name == tune["name"])).first()
             if found_tune != None and found_tune.downloaded_timestamp != None:
                 tune["source_id"] = found_tune.source_id
 
     # Write tune to database
-    tunes_table = get_metadata().tables['tunes']
+    tunes_table = db.get_metadata().tables['tunes']
     tune_id = 0
     try:
         ins = tunes_table.insert().values(name = tune["name"],
@@ -125,7 +125,7 @@ def add_tune(set_id, tune_yaml):
                                             source_id = tune["source_id"],
                                             source_setting = tune["source_setting"]
                                         )
-        result = get_connection().execute(ins)
+        result = db.get_connection().execute(ins)
         tune_id = result.inserted_primary_key[0]
     except:
         logger.debug("Tune configuration already exists")
@@ -133,24 +133,24 @@ def add_tune(set_id, tune_yaml):
                                         tunes_table.c.source == tune["source"],
                                         tunes_table.c.source_id == tune["source_id"], 
                                         tunes_table.c.source_setting == tune["source_setting"])
-        result = get_connection().execute(existing_tune)
+        result = db.get_connection().execute(existing_tune)
         tune_id = result.fetchone().id
 
     # Write set and tune to bridging table
-    tunes_to_sets_table = get_metadata().tables['tunes_to_sets']
+    tunes_to_sets_table = db.get_metadata().tables['tunes_to_sets']
     ins = tunes_to_sets_table.insert().values(tune = tune_id, set = set_id)
     try:
-        result = get_connection().execute(ins)
+        result = db.get_connection().execute(ins)
     except:
         logger.debug("tunes to set with tune id {} and set id {} already exists".format(tune_id, set_id))
     logger.debug("Tune with tuple {}, {}, {} handled successfully, saved with ID {}".format(tune["name"], tune["source_id"], tune["source_setting"], tune_id))
     return tune_id
 
 def link_set_and_tune(set_id, tune_id, order):
-    table = get_metadata().tables['tunes_to_sets']
+    table = db.get_metadata().tables['tunes_to_sets']
     ins = table.insert().values(set = set_id, tune = tune_id, order = order)
     try:    
-        result = get_connection().execute(ins)
+        result = db.get_connection().execute(ins)
         result.inserted_primary_key[0]
         logger.debug("Set with id {} and tune with id {} linked, order {}".format(set_id, tune_id, order))
         return

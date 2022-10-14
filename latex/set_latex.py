@@ -31,7 +31,7 @@ class Set_latex:
     def write_to_set_index(self):
         logger.debug("Writing file {} to index.".format(self.path))
         with open(os.path.join(directory_tracker[self.set.rhythm], "00-Index.tex"), 'a') as index_file:
-            path = os.path.join("sets", self.set.rhythm, self.filename)
+            path = os.path.join("sets", self.set.rhythm.replace(" ", "_"), self.filename)
             index_file.write("\n\\input{{./{}}}".format(path))
         return
 
@@ -73,7 +73,7 @@ class Set_latex:
             logger.debug("Directory and latex entry for rhythm {} does not exist".format(rhythm))
             folder_path = os.path.join(settings.settings["tmp_dir"],
                                     "sets",
-                                    rhythm)
+                                    rhythm.replace(" ", "_"))
             if not os.path.exists(folder_path):
                 logger.debug("Storage folder {} does not exist, creating...".format(folder_path))
                 os.mkdir(folder_path)

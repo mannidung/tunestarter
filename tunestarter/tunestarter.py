@@ -1,4 +1,3 @@
-from unittest import case
 import db
 import logging
 from . import Tune, Set
@@ -72,7 +71,27 @@ class Tunestarter(Base):
                 return session.scalars(select(Set)
                                         .where(Set.tunestarter_id == self.id)
                                         .order_by(Set.id)).all()
-    
+        
+    def get_tunes(self):
+        tunes = []
+        tunes_table = db.get_metadata().tables['tunes']
+        sets_table = db.get_metadata().tables['sets']
+        tunes_to_sets_table = db.get_metadata().tables['tunes_to_sets']
+        with Session(db.get_engine()) as session:
+            # Get the 
+            result = session.execute(select(tunes_table.c.id)
+                                    .join_from(tunes_table, tunes_to_sets_table)
+                                    .join_from(tunes_to_sets_table, sets_table)
+                                    .where(sets_table.c.tunestarter_id == self.id)
+                                    )
+            already_appended = []
+            for tune_id in result:
+                if tune_id[0] not in already_appended:
+                    tunes.append(Tune.get_tune(tune_id[0]))
+                already_appended.append(tune_id[0])
+        return tunes
+        
+
     @classmethod
     def get_tunestarter(Tunestarter, id):
         logger.debug("Return tunestarter object for tunestarter with ID {}".format(id))
