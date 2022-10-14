@@ -40,17 +40,42 @@ class Set_latex:
         strings.append("\\subsection{{ {} }} \n".format(self.set.title))
         strings.append("\\label{{{}}} \n".format(self.set.label))
         for tune in self.tunes:
-            strings.append("{} \\\\ \n".format(tune.title))
-            strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
-            strings.append("\\begin{{abc}}[name={}-set] \n".format(tune.label))
+            # First, create shortened ABC
             abc_split = tune.abc.split('|')
             abc_split = abc_split[:4]
             while "" in abc_split: abc_split.remove("") 
             abc_split = [""] + abc_split + [""]
             abc = "|".join(abc_split)
             logger.debug("Modified abc: {}".format(abc))
-            strings.append(abc)
-            strings.append("\n\\end{abc}\n")
+
+            # Then, write stuff to the latex file
+
+            strings.append("{} \\\\ \n".format(tune.title))
+            strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
+            strings.append("\\begin{{abc}}[name={}-set] \n".format(tune.label))
+            """
+            X: 1
+            T: Belles Of Tipperary, The X
+            Z: b.maloney X
+            S: https://thesession.org/tunes/769#setting769
+            R: reel
+            M: 4/4
+            L: 1/8
+            K: Dmaj
+            transcription = Column(String)
+            metre = Column(String)
+            unit_note_length = Column(String)
+            key = Column(String)
+            source = Column(String)
+            """
+            strings.append("X: " + "1" + "\n")
+            strings.append("Z: " + tune.transcription + "\n")
+            strings.append("M: " + tune.metre + "\n")
+            strings.append("L: " + tune.note_length + "\n")
+            strings.append("K: " + tune.key + "\n")
+            strings.append("R: " + tune.rhythm + "\n")
+            strings.append(abc + "\n")
+            strings.append("\\end{abc}\n")
         return strings
     
     @classmethod

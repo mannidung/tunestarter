@@ -74,8 +74,12 @@ def create_schema(engine):
         Column('source_id', Integer, nullable=False), # ID of tune at the source
         Column('source_setting', Integer, nullable=False), # Setting of the tune at the source
         Column('downloaded_timestamp', Integer, nullable=True), # Downloaded timestamp in unix time
-        Column('title', String, nullable=True), # Proper title of tune, from abc notation
-        Column('rhythm', String, nullable=True), # The rhythm (reel, jig, waltz, etc.) is it?
+        Column('title', String, nullable=True), # Proper title of tune, from abc notation, ABC Key T
+        Column('rhythm', String, nullable=True), # The rhythm (reel, jig, waltz, etc.) is it? ABC Key R
+        Column('transcription', String, nullable=True), # Source of transcription, ABC Key Z
+        Column('metre', String, nullable=True), # ABC Key M
+        Column('note_length', String, nullable=True), # ABC key L
+        Column('key', String, nullable=True), # ABC Key K
         Column('abc', String, nullable=True), # The abc notation
         Column('label', String, nullable=True), # Label, used for referencing in latex
         UniqueConstraint('name',
@@ -84,7 +88,6 @@ def create_schema(engine):
                         'source_setting',
                         name='unique_index_tunes') # Uniqueness constraint
     )
-
     # The table containing the tunestarters
     Table('tunestarters', metadata_obj,
         Column('id', Integer, primary_key=True),

@@ -45,12 +45,13 @@ class Tunestarter_latex:
     def generate_pdf(self):
         logger.debug("Starting first round of pdflatex, writing output to {}".format(settings.settings["pdflatex_output"]))
         with open(settings.settings["pdflatex_output"], "w") as outfile:
-            p = subprocess.Popen(pdflatex_command, cwd=settings.settings["tmp_dir"], stdout=outfile)
+            p = subprocess.Popen(pdflatex_command, cwd=settings.settings["tmp_dir"], stdout=outfile, stderr=outfile)
+            logger.debug("Latex command is {}".format(p.args))
             p.wait()
-
         logger.debug("Starting second round of pdflatex, writing output to {}".format(settings.settings["pdflatex_output"]))
         with open(settings.settings["pdflatex_output"], "a") as outfile:
-            q = subprocess.Popen(pdflatex_command, cwd=settings.settings["tmp_dir"], stdout=outfile)
+            q = subprocess.Popen(pdflatex_command, cwd=settings.settings["tmp_dir"], stdout=outfile, stderr=outfile)
+            logger.debug("Latex command is {}".format(q.args))
             q.wait()
         logger.debug("Moving generated PDF from {} to ./".format(settings.settings["tmp_dir"]))
         shutil.move(os.path.join(settings.settings["tmp_dir"], "Tunestarter.pdf"), "{}.pdf".format("test"))

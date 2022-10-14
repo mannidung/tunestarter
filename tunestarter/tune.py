@@ -28,8 +28,13 @@ class Tune(Base):
     downloaded_timestamp = Column(Integer)
     title = Column(String)
     rhythm = Column(String)
+    transcription = Column(String)
+    metre = Column(String)
+    note_length = Column(String)
+    key = Column(String)
     abc = Column(String)
     label = Column(String)
+
 
     def __repr__(self):
         return "\n\t---\n\t"\
@@ -41,6 +46,10 @@ class Tune(Base):
                 "Downloaded_timestamp: {}\n\t"\
                 "Title: {}\n\t"\
                 "Rhythm: {}\n\t"\
+                "Transcription: {}\n\t"\
+                "Metre: {}\n\t"\
+                "Note Length: {}\n\t"\
+                "Key: {}\n\t"\
                 "ABC: {}\n\t"\
                 "Label: {}\n\t"\
                 "---\n".format(self.id,
@@ -51,6 +60,10 @@ class Tune(Base):
                                 self.downloaded_timestamp,
                                 self.title,
                                 self.rhythm,
+                                self.transcription,
+                                self.metre,
+                                self.note_length,
+                                self.key,
                                 self.abc,
                                 self.label)
 
@@ -89,6 +102,10 @@ class Tune(Base):
         for tune in sjkabc.parse_file(path):
             self.title = "".join(tune.title)
             self.rhythm = "".join(tune.rhythm)
+            self.transcription = "".join(tune.transcription)
+            self.metre = "".join(tune.metre)
+            self.note_length = "".join(tune.note_length)
+            self.key = "".join(tune.key)
             self.abc = "".join(tune.abc)
 
     def __get_temp_path(self):
