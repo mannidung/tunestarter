@@ -1,7 +1,7 @@
 import hashlib
 import time
-from .sources import *
-from .db import *
+from sources import *
+from db import *
 import settings
 import logging
 

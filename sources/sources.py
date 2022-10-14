@@ -1,13 +1,13 @@
-from .db import *
+import db
 import requests
 import logging
 
 logger = logging.getLogger(__name__)
 
 def get_source_name_from_id(source):
-    sources_table = get_metadata().tables['sources']
+    sources_table = db.get_metadata().tables['sources']
     source = sources_table.select().where(sources_table.c.id == source)
-    result = get_connection().execute(source).first()
+    result = db.get_connection().execute(source).first()
     return result[1]
 
 def get_id_from_name(source, name):

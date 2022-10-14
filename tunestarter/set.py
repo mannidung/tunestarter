@@ -1,6 +1,6 @@
 import hashlib
-from db.tune import Tune
-from .db import *
+from db import *
+from . import Tune
 import logging
 
 from sqlalchemy import Column

@@ -1,7 +1,6 @@
-from db.tune import Tune
-from db.set import Set
-from .db import *
+from db import *
 import logging
+from . import Tune, Set
 
 from sqlalchemy import Column
 from sqlalchemy import Integer, String

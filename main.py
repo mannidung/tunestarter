@@ -2,9 +2,7 @@ import settings
 import os
 import shutil
 import db
-import utils
-import setprocessor
-from db import Tunestarter
+from tunestarter import Tunestarter
 import argparse
 import logging
 

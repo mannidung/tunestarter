@@ -1,7 +1,8 @@
 import utils
 from .db import *
-from .tune import *
 import logging
+from sqlalchemy.orm import Session
+from tunestarter import Tune
 
 logger = logging.getLogger(__name__)
 
