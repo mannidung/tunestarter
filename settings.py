@@ -13,12 +13,6 @@ def read_setup():
     global settings
     logging.basicConfig(level=logging.DEBUG)
     settings = utils.read_yaml('./config.yaml')
-    if not os.path.exists(settings["storage"]):
-        logger.debug("Storage folder does not exist, creating...")
-        os.mkdir(settings["storage"])
-    else: # Remove old storage and create new one
-        shutil.rmtree(settings["storage"])
-        os.mkdir(settings["storage"])
 
     # Clean up any tmp dir that might already exist
     if os.path.exists(settings["tmp_dir"]):

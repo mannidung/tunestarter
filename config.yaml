@@ -1,6 +1,12 @@
 ---
-  storage: "./storage"
+  # User settings
+  # Number of measures to include in sets
+  num_measures: 4
+
+  # Storage settings
   tmp_dir: "./tmp"
-  debug_mode: True
   db: "./tunestarter.db"
+  
+  # Debug settings
+  debug_mode: True
   pdflatex_output: "./pdflatex.log"

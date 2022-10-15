@@ -32,8 +32,8 @@ class Tunestarter_latex:
         self.prepare_boilerplate()
         self.generate_latex()
         self.generate_pdf()
-        #if not settings.settings["keeptmp"]:
-        #    cleanup_boilerplate()
+        if not settings.settings["keeptmp"]:
+            self.cleanup_boilerplate()
 
     def prepare_boilerplate(self):
         logger.debug("Copying boilerplate to {}".format(settings.settings["tmp_dir"]))
