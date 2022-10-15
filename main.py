@@ -31,11 +31,13 @@ if __name__ == "__main__":
         if args.keeptmp:
             settings.settings["keeptmp"] = True
 
+        logger.info("Importing tunestarter from file {}".format(args.filepath[0]))
         tunestarter_id = yaml_import.import_yaml(args.filepath[0])
+        logger.info("Creating tunestarter PDF")
         tunestarter = Tunestarter_latex(tunestarter_id)
 
     except Exception as e:
-        logger.debug("Exception! Panicking!")
-        logger.debug("{}".format(str(e)))
+        logger.error("Exception! Panicking!")
+        logger.error("{}".format(str(e)))
         if os.path.exists(settings.settings["tmp_dir"]):
             shutil.rmtree(settings.settings["tmp_dir"])

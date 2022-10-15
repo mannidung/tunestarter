@@ -36,14 +36,17 @@ class Tunestarter_latex:
             self.cleanup_boilerplate()
 
     def prepare_boilerplate(self):
+        logger.info("Copying boilerplate")
         logger.debug("Copying boilerplate to {}".format(settings.settings["tmp_dir"]))
         destination = shutil.copytree("./boilerplate", settings.settings["tmp_dir"])
 
     def cleanup_boilerplate(self):
+        logger.info("Cleaning up boilerplate")
         logger.debug("Cleaning up boilerplate, removing directory {}".format(settings.settings["tmp_dir"]))
         shutil.rmtree(settings.settings["tmp_dir"])
 
     def generate_pdf(self):
+        logger.info("Generating PDF")
         logger.debug("Starting first round of pdflatex, writing output to {}".format(settings.settings["pdflatex_output"]))
         with open(settings.settings["pdflatex_output"], "w") as outfile:
             p = subprocess.Popen(pdflatex_command, cwd=settings.settings["tmp_dir"], stdout=outfile, stderr=outfile)

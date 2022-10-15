@@ -1,13 +1,13 @@
-# Tunestarter
-## Tunestarter is in pre-alpha! It can only get better from here!
-### Purpose
+# Tunestarter 0.1.0
+
+## What is tunestarter?
 Have you ever been to a folk session and wanted to play a set of tunes, but you simply couldn't remember how they began?
 
 Or have you ever started a set and forgotten how the second or third tune starts?
 
 Or are you simply tired of carrying 15 different printouts of the same tune, all arranged in different sets?
 
-Then Tunestarter is for you. Tunestarter creates tune starting helpers containing the first few bars of each tune in a set. This means you have the beginning of each tune visible at first glance.
+Then Tunestarter is for you. Tunestarter creates tune-starting helpers containing the first few bars of each tune in a set. This means you have the beginning of each tune visible at first glance.
 
 As a bonus, it also includes the entire tune in a second chapter, complete with cross-references, so you can jump to the full tune from the set. From the tune, you can see what sets you have included it in.
 
@@ -39,7 +39,7 @@ In this file, you simply list the sets one by one, writing the index and version
 
 Tunestarter will use this information to download the ABC files, sort them, and create LaTeX files for each set and tune, based on a boilerplate.
 
-Finally, it will generate a PDF file you can bring with you on your phone or tablet or print it out (but please don't... think about the trees).
+Finally, it will generate a PDF file you can bring with you on your phone or tablet or print it (but please don't... think about the trees).
 
 ### Usage
 ```usage: tunestarter [-h] [--keeptmp] filepath
@@ -54,10 +54,29 @@ optional arguments:
   --keeptmp   the tmp file will be kept after generation is done (good for debugging)
   ```
 
+### config.yaml
+Some user settings and storage settings are stored in the file `config.yaml`. Here you can set the storage directories, path for the database, and also the number of measures that should be included in the tune set starters.
+
+Below you can see an example of a config.yaml file.
+```
+---
+  # User settings
+  # Number of measures to include in sets
+  num_measures: 4
+
+  # Storage settings
+  tmp_dir: "./tmp"
+  db: "./tunestarter.db"
+  
+  # Debug settings
+  debug_mode: True
+  pdflatex_output: "./pdflatex.log"
+  ```
+
 ### Current limitations
 - Only works with thesession.org.
 - Only tested on mac.
-- You need to set up PDFlatex before running this.
+- pdflatex with package abc
 - No real testing, error handling, etc. Be prepared to get nasty errors if you do something wrong.
 
 ### Roadmap

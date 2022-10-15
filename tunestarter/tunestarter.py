@@ -38,12 +38,15 @@ class Tunestarter(Base):
         self.prepare()
 
     def prepare(self):
+        logger.info("Preparing tunestarter")
         logger.debug("Preparing tunestarter {} with ID {}".format(self.name, self.id))
         # First, download tunes if they aren't already prepared
         logger.debug("Downloading tunes...")
+        logger.info("Downloading tunes")
         Tune.download_tunes()
         logger.debug("Downloading sets done")
         logger.debug("Preparing sets...")
+        logger.info("Preparing sets")
         self.prepare_sets()
         logger.debug("Sets of tunestarter {} prepared".format(self.name))
 
@@ -373,5 +376,4 @@ class Set(Base):
     def get_set(Set, id):
         with Session(db.get_engine()) as session:
             set = session.scalars(select(Set).where(Set.id == id)).first()
-            #print(set)
             return set

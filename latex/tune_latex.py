@@ -12,7 +12,6 @@ class Tune_latex:
         logger.debug("Creating Set_latex for set with ID {}".format(tune.id))
         self.tunestarter_id = tunestarter_id
         self.tune = tune
-        print(self.tune)
         folder_path = Tune_latex.get_set_directory_path(self.tune.rhythm)
         self.filename = "{}.tex".format(self.tune.label)
         self.path = os.path.join(folder_path, self.filename)

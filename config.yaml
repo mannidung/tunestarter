@@ -8,5 +8,5 @@
   db: "./tunestarter.db"
   
   # Debug settings
-  debug_mode: True
+  debug_mode: False
   pdflatex_output: "./pdflatex.log"

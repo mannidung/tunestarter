@@ -39,7 +39,6 @@ class SetLatex:
         self.write_to_latex_index()
     
     def write_to_latex_index(self):
-        print(os.path.join(settings.settings["tmp_dir"], "sets",self.tunetypes ,"00-Index.tex"))
         file = open(os.path.join(settings.settings["tmp_dir"], "sets", self.tunetypes ,"00-Index.tex"),'a')
         file.write("\n\\input{{./{}}}".format(self.filename))
         file.close()
@@ -52,7 +51,6 @@ class SetLatex:
             strings.append("{} \\\\ \n".format(tune.title))
             strings.append("Full tune on page ~\pageref{{{}}}\n".format(tune.label))
             strings.append("\\begin{{abc}}[name={}] \n".format(hashlib.md5(tune.title.encode('utf-8')).hexdigest()))
-            print(tune.path)
             file = open(tune.path,'r')
             cont = True
             while cont:
