@@ -20,3 +20,14 @@
           setting: 1
         - source: "thesession"
           id: 19
+    - name: "Test"
+      tunes:
+        - source: "thesession"
+          id: 1367
+          setting: 4
+        - source: "thesession"
+          id: 822
+          setting: 4
+        - source: "thesession"
+          id: 2465
+          setting: 1

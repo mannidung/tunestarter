@@ -1,10 +1,12 @@
 import settings
 import os
 import shutil
-import utils
-import setprocessor
-from tunestarter import Tunestarter
+import yaml_import
+from latex import Tunestarter_latex
 import argparse
+import logging
+
+logger = logging.getLogger(__name__)
 
 this_setup = None
 debug = True
@@ -21,16 +23,19 @@ parser.add_argument('--keeptmp',
                     help='the tmp file will be kept after generation is done (good for debugging)')
 
 if __name__ == "__main__":
-    settings.read_setup()
-    args = parser.parse_args()
-    
-    # Should the temporary directory be kept afterwards?
-    if args.keeptmp:
-        settings.settings["keeptmp"] = True
-
-    # Clean up any tmp dir that might already exist
-    if os.path.exists(settings.settings["tmp_dir"]):
-        shutil.rmtree(settings.settings["tmp_dir"])
+    try:
+        settings.read_setup()
+        args = parser.parse_args()
         
-    tunestarter = Tunestarter()
-    tunestarter.create_tunestarter(args.filepath[0])
+        # Should the temporary directory be kept afterwards?
+        if args.keeptmp:
+            settings.settings["keeptmp"] = True
+
+        tunestarter_id = yaml_import.import_yaml(args.filepath[0])
+        tunestarter = Tunestarter_latex(tunestarter_id)
+
+    except Exception as e:
+        logger.debug("Exception! Panicking!")
+        logger.debug("{}".format(str(e)))
+        if os.path.exists(settings.settings["tmp_dir"]):
+            shutil.rmtree(settings.settings["tmp_dir"])
