@@ -241,6 +241,24 @@ class Tune(Base):
                 sets.append(Set.get_set(set_id[0]))
         return sets
 
+    def get_sets_in_tunestarter(self, tunestarter_id):
+        logger.debug("Getting sets where tune {} is included".format(self.id))
+        sets = []
+        tunes_table = db.get_metadata().tables['tunes']
+        sets_table = db.get_metadata().tables['sets']
+        tunes_to_sets_table = db.get_metadata().tables['tunes_to_sets']
+        with Session(db.get_engine()) as session:
+            # Get the 
+            result = session.execute(select(tunes_to_sets_table.c.set)
+                                    .join_from(tunes_table, tunes_to_sets_table)
+                                    .join_from(tunes_to_sets_table, sets_table)
+                                    .where(tunes_to_sets_table.c.tune == self.id, sets_table.c.tunestarter_id == tunestarter_id)
+                                    .order_by(sets_table.c.title)
+                                    )
+            for set_id in result:
+                sets.append(Set.get_set(set_id[0]))
+        return sets
+
     @classmethod
     def download_tunes(Tune):
         logger.debug("Starting downloading of tunes ####")

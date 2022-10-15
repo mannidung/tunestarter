@@ -64,5 +64,5 @@ class Tunestarter_latex:
             Set_latex(set)
         tunes = self.tunestarter.get_tunes()
         for tune in tunes:
-            Tune_latex(tune)
+            Tune_latex(tune, self.tunestarter.id)
         return None

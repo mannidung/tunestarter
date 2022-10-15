@@ -37,5 +37,5 @@ if __name__ == "__main__":
     except Exception as e:
         logger.debug("Exception! Panicking!")
         logger.debug("{}".format(str(e)))
-        if os.path.exists(settings.settings["storage"]):
-            shutil.rmtree(settings.settings["storage"])
+        if os.path.exists(settings.settings["tmp_dir"]):
+            shutil.rmtree(settings.settings["tmp_dir"])

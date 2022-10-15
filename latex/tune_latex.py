@@ -8,8 +8,9 @@ logger = logging.getLogger(__name__)
 directory_tracker = {}
 
 class Tune_latex:
-    def __init__(self, tune):
+    def __init__(self, tune, tunestarter_id):
         logger.debug("Creating Set_latex for set with ID {}".format(tune.id))
+        self.tunestarter_id = tunestarter_id
         self.tune = tune
         print(self.tune)
         folder_path = Tune_latex.get_set_directory_path(self.tune.rhythm)
@@ -24,7 +25,6 @@ class Tune_latex:
         logger.debug("Writing strings {} to file {}".format(strings, self.path))
         with open(self.path,'w+') as set_file:
             for string in strings:
-                #logger.debug("Writing string \'{}\' to file {}".format(string, self.path))
                 set_file.write(string)
         self.write_to_tune_index()
         return
@@ -56,7 +56,7 @@ class Tune_latex:
         strings.append(abc + "\n")
         strings.append("\\end{abc}\n")
         strings.append("Tune used in sets ")
-        sets = self.tune.get_sets()
+        sets = self.tune.get_sets_in_tunestarter(self.tunestarter_id)
         for set in sets:
             logger.debug("Adding reference to tune {} using label {}".format(self.tune.id, set.label))
             string = "~\\nameref{{{}}}, ".format(set.label)
