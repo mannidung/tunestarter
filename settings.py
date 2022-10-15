@@ -18,6 +18,9 @@ def read_setup():
     # Clean up any tmp dir that might already exist
     if os.path.exists(settings["tmp_dir"]):
         shutil.rmtree(settings["tmp_dir"])
+    
+    if not os.path.exists(settings["storage"]):
+        os.mkdir(settings["storage"])
 
     settings["keeptmp"] = False
     db.setup_db(settings["db"], True)

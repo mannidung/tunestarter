@@ -5,6 +5,7 @@
 
   # Storage settings
   tmp_dir: "./tmp"
+  storage: "./storage"
   db: "./tunestarter.db"
   
   # Debug settings

@@ -23,21 +23,21 @@ parser.add_argument('--keeptmp',
                     help='the tmp file will be kept after generation is done (good for debugging)')
 
 if __name__ == "__main__":
-    try:
-        settings.read_setup()
-        args = parser.parse_args()
-        
-        # Should the temporary directory be kept afterwards?
-        if args.keeptmp:
-            settings.settings["keeptmp"] = True
+    #try:
+    settings.read_setup()
+    args = parser.parse_args()
+    
+    # Should the temporary directory be kept afterwards?
+    if args.keeptmp:
+        settings.settings["keeptmp"] = True
 
-        logger.info("Importing tunestarter from file {}".format(args.filepath[0]))
-        tunestarter_id = yaml_import.import_yaml(args.filepath[0])
-        logger.info("Creating tunestarter PDF")
-        tunestarter = Tunestarter_latex(tunestarter_id)
+    logger.info("Importing tunestarter from file {}".format(args.filepath[0]))
+    tunestarter_id = yaml_import.import_yaml(args.filepath[0])
+    logger.info("Creating tunestarter PDF")
+    tunestarter = Tunestarter_latex(tunestarter_id)
 
-    except Exception as e:
-        logger.error("Exception! Panicking!")
-        logger.error("{}".format(str(e)))
-        if os.path.exists(settings.settings["tmp_dir"]):
-            shutil.rmtree(settings.settings["tmp_dir"])
+    #except Exception as e:
+    #    logger.error("Exception! Panicking!")
+    #    logger.error("{}".format(str(e)))
+    #    if os.path.exists(settings.settings["tmp_dir"]):
+    #        shutil.rmtree(settings.settings["tmp_dir"])
