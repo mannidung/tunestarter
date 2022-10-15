@@ -21,8 +21,10 @@ class Tune_latex:
     def create_latex(self):
         logger.debug("Creating latex for tune {}".format(self.tune.name))
         strings = self.get_tune_latex_strings()
+        logger.debug("Writing strings {} to file {}".format(strings, self.path))
         with open(self.path,'w+') as set_file:
             for string in strings:
+                #logger.debug("Writing string \'{}\' to file {}".format(string, self.path))
                 set_file.write(string)
         self.write_to_tune_index()
         return
@@ -44,8 +46,6 @@ class Tune_latex:
 
         # Then, write stuff to the latex file
 
-        strings.append("{} \\\\ \n".format(self.tune.title))
-        strings.append("Full tune on page ~\pageref{{{}}}\n".format(self.tune.label))
         strings.append("\\begin{{abc}}[name={}] \n".format(self.tune.label))
         strings.append("X: " + "1" + "\n") # THIS ROW IS IMPORTANT! WITHOUT X, PS FILES WILL NOT BE GENERATED!
         strings.append("Z: " + self.tune.transcription + "\n")
@@ -55,6 +55,14 @@ class Tune_latex:
         strings.append("R: " + self.tune.rhythm + "\n")
         strings.append(abc + "\n")
         strings.append("\\end{abc}\n")
+        strings.append("Tune used in sets ")
+        sets = self.tune.get_sets()
+        for set in sets:
+            logger.debug("Adding reference to tune {} using label {}".format(self.tune.id, set.label))
+            string = "~\\nameref{{{}}}, ".format(set.label)
+            logger.debug("Appending string \'{}\'".format(string))
+            strings.append(string)
+        strings.append("\n")
         return strings
 
 
@@ -76,7 +84,7 @@ class Tune_latex:
             with open(index_path, "w") as rhythm_index:
                 rhythm_index.write("\section{{{}s}}".format(rhythm.capitalize()))
             with open(os.path.join(settings.settings["tmp_dir"], "Tunes.tex"), 'a') as set_index:
-                set_index.write("\\input{{./tunes/{}/00-Index.tex}}\n\\clearpage\n".format(rhythm))
+                set_index.write("\\input{{./tunes/{}/00-Index.tex}}\n\\clearpage\n".format(rhythm.replace(" ", "_")))
             logger.debug("Setting set directory path for {} to {}".format(rhythm, folder_path))
             directory_tracker[rhythm] = folder_path
 

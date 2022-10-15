@@ -42,7 +42,7 @@ class Set_latex:
         for tune in self.tunes:
             # First, create shortened ABC
             abc_split = tune.abc.split('|')
-            abc_split = abc_split[:4]
+            abc_split = abc_split[:settings.settings["num_measures"]]
             while "" in abc_split: abc_split.remove("") 
             abc_split = [""] + abc_split + [""]
             abc = "|".join(abc_split)
@@ -81,7 +81,7 @@ class Set_latex:
             with open(index_path, "w") as rhythm_index:
                 rhythm_index.write("\section{{{} Sets}}".format(rhythm.capitalize()))
             with open(os.path.join(settings.settings["tmp_dir"], "Sets.tex"), 'a') as set_index:
-                set_index.write("\\input{{./sets/{}/00-Index.tex}}\n\\clearpage\n".format(rhythm))
+                set_index.write("\\input{{./sets/{}/00-Index.tex}}\n\\clearpage\n".format(rhythm.replace(" ", "_")))
             logger.debug("Setting set directory path for {} to {}".format(rhythm, folder_path))
             directory_tracker[rhythm] = folder_path
 

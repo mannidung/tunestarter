@@ -6,8 +6,6 @@ from latex import Tunestarter_latex
 import argparse
 import logging
 
-from tunestarter.tune import Tune
-
 logger = logging.getLogger(__name__)
 
 this_setup = None

@@ -55,7 +55,7 @@ class Tunestarter_latex:
             logger.debug("Latex command is {}".format(q.args))
             q.wait()
         logger.debug("Moving generated PDF from {} to ./".format(settings.settings["tmp_dir"]))
-        shutil.move(os.path.join(settings.settings["tmp_dir"], "Tunestarter.pdf"), "{}.pdf".format("test"))
+        shutil.move(os.path.join(settings.settings["tmp_dir"], "Tunestarter.pdf"), "{}.pdf".format(self.tunestarter.name.replace(" ", "_")))
 
     def generate_latex(self):
         logger.debug("Creating latex files for tunestarter {}".format(self.tunestarter.name))
