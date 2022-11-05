@@ -13,11 +13,11 @@ debug = True
 
 parser = argparse.ArgumentParser(prog='tunestarter',
                     description='Create a tunestarter for your session')
-parser.add_argument('filepath',
-                    metavar='filepath',
+parser.add_argument('user',
+                    metavar='user',
                     type=str,
                     nargs=1,
-                    help='path to the tune starter yaml file')
+                    help='thesession.org user name to fetch sets from')
 parser.add_argument('--keeptmp',
                     action="store_true",
                     help='the tmp file will be kept after generation is done (good for debugging)')
@@ -31,10 +31,13 @@ if __name__ == "__main__":
     if args.keeptmp:
         settings.settings["keeptmp"] = True
 
-    logger.info("Importing tunestarter from file {}".format(args.filepath[0]))
-    tunestarter_id = yaml_import.import_yaml(args.filepath[0])
-    logger.info("Creating tunestarter PDF")
-    tunestarter = Tunestarter_latex(tunestarter_id)
+    #logger.info("Importing tunestarter from file {}".format(args.filepath[0]))
+    #tunestarter_id = yaml_import.import_yaml(args.filepath[0])
+    tunestarter_id = yaml_import.thesession_import("intmurr")
+    #exit()
+
+    #logger.info("Creating tunestarter PDF")
+    #tunestarter = Tunestarter_latex(tunestarter_id)
 
     #except Exception as e:
     #    logger.error("Exception! Panicking!")

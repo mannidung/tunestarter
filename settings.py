@@ -10,9 +10,11 @@ def read_setup():
     global settings
     
     settings = utils.read_yaml('./config.yaml')
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     if "debug_mode" in settings:
+        logging.info("Debugmode found")
         if settings["debug_mode"] == True:
+            logging.info("Debugmode set to true")
             logging.basicConfig(level=logging.DEBUG)
         
     # Clean up any tmp dir that might already exist

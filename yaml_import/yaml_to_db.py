@@ -4,8 +4,113 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from tunestarter import Tune
+import requests
 
 logger = logging.getLogger(__name__)
+
+def thesession_import(username):
+    logger.debug("Username {}".format(username))
+    name = "{}\'s tunestarter".format(username)
+    tunestarter_id = add_tunestarter(name)
+
+    params = dict(
+                q=username,
+                format='json',
+                perpage='1'
+            )
+    url = "https://thesession.org/members/search"
+    resp = requests.get(url=url, params=params)
+    data = resp.json() # Check the JSON Response Content documentation below
+    if len(data["members"]) == 0:
+        # No result was returned, search term needs to be improved
+        logger.error("ERROR: No search result for member with name {}, please check the search terms".format(username))
+        quit()
+    id = data["members"][0]["id"]
+    logger.debug("Member found for name {}, has id {}".format(username, id))
+    params = dict(
+                format='json',
+                perpage=50
+            )
+    url = "https://thesession.org/members/{}/sets".format(id)
+    resp = requests.get(url=url, params=params)
+    data = resp.json() # Check the JSON Response Content documentation below
+    if len(data["sets"]) == 0:
+        # No result was returned, search term needs to be improved
+        logger.error("ERROR: Member with name {} has no sets, exiting...".format(username))
+        quit()
+    logger.debug(data["pages"])
+    logger.debug(data["page"])
+    logger.debug(data["total"])
+    for set in data["sets"]:
+    #    logger.debug(set["id"])
+        process_thesession_set(tunestarter_id, set)
+    #process_thesession_set(data["sets"][1])
+    
+    if data["pages"] > 1:
+        logger.debug("More pages to come")
+        current_page = 2
+        while current_page <= data["pages"]:
+            params["page"] = current_page
+            resp = requests.get(url=url, params=params)
+            data = resp.json() # Check the JSON Response Content documentation below
+            if len(data["sets"]) == 0:
+                # No result was returned, search term needs to be improved
+                logger.error("ERROR: No tunes on page {}, something went wrong, but isn't fatal".format(username))
+                current_page = data["pages"] + 1
+                break
+            #logger.debug("Page {}".format(current_page))
+            current_page = current_page + 1
+            for set in data["sets"]:
+                logger.debug(set["id"])
+    return tunestarter_id
+
+def process_thesession_set(tunestarter_id, set):
+    #logger.debug(set)
+    set_name = set["name"]
+    set_id = add_set(1, set_name)
+    order = 1
+    for setting in set["settings"]:
+        thesession_id, tune_setting = translate_setting_to_id(setting)
+        tune_yaml = {
+            "source": "thesession",
+            "id": thesession_id,
+            "setting": tune_setting
+        }
+        tune_id = add_tune(set_id, tune_yaml)
+        link_set_and_tune(set_id, tune_id, order)
+        order = order + 1
+
+
+def translate_setting_to_id(setting):
+    url = setting["url"]
+    url_split = url.split("#setting")
+    tune_setting = url_split[1]
+    tune_id = url_split[0].split("/")[-1]
+    logger.debug("Tune Setting before processing: {}".format(tune_setting))
+    logger.debug("Tune ID: {}".format(tune_id))
+    if tune_setting == tune_id:
+        tune_setting = 0
+    else:
+        params = dict(
+                format='json'
+            )
+        url = "https://thesession.org/tunes/{}".format(tune_id)
+        resp = requests.get(url=url, params=params)
+        data = resp.json() # Check the JSON Response Content documentation below
+        if len(data["settings"]) == 0:
+            # No result was returned, search term needs to be improved
+            logger.error("ERROR: Tune with ID {} has no settings, exiting...".format(tune_id))
+            quit()
+        index = 0
+        for setting in data["settings"]:
+            if int(tune_setting) == int(setting["id"]):
+                logger.debug("Found tune setting {} at index {}".format(tune_setting, index))
+                tune_setting = index
+                break
+            index = index + 1
+    logger.debug("Tune Setting: {}".format(tune_setting))
+    return int(tune_id), int(tune_setting)
+
 
 def import_yaml(filepath):
         collection = utils.read_yaml(filepath)
